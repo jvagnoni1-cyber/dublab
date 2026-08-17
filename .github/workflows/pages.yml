@@ -31,13 +31,26 @@ jobs:
           path: |
             site/assets/scenes
             site/scenes.generated.json
-          key: dublab-browser-scenes-v1
+          key: dublab-browser-scenes-v2
 
       - name: Install media tools
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
           ffmpeg -version | head -1
+
+      - name: Patch legacy OGV stream selection
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/build_student_site.py')
+          s=p.read_text()
+          old="run(['ffmpeg','-y','-i',str(video),'-an','-vf',vf"
+          new="run(['ffmpeg','-y','-i',str(video),'-map','0:v:0','-an','-vf',vf"
+          if old not in s:
+              raise SystemExit('Expected video transcode line not found')
+          p.write_text(s.replace(old,new))
+          PY
 
       - name: Build student site and scene library
         run: python scripts/build_student_site.py
