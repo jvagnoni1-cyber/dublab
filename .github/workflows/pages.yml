@@ -1,8 +1,8 @@
-name: Deploy DubLab to Pages
+name: Deploy DubLab classroom bundle
 
 on:
-  push:
-    branches: ["main"]
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -20,52 +20,30 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Restore FFmpeg cache
-        uses: actions/cache@v4
-        with:
-          path: tools/ffmpeg
-          key: dublab-ffmpeg-master-linux64-v1
-
-      - name: Install current FFmpeg
+      - name: Download classroom bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          if [ ! -x tools/ffmpeg/ffmpeg ]; then
-            mkdir -p tools/ffmpeg /tmp/ffmpeg-build
-            curl -L --fail --retry 3 -o /tmp/ffmpeg.tar.xz https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
-            tar -xJf /tmp/ffmpeg.tar.xz -C /tmp/ffmpeg-build --strip-components=1
-            cp /tmp/ffmpeg-build/bin/ffmpeg /tmp/ffmpeg-build/bin/ffprobe tools/ffmpeg/
-            chmod +x tools/ffmpeg/ffmpeg tools/ffmpeg/ffprobe
-          fi
-          echo "$GITHUB_WORKSPACE/tools/ffmpeg" >> "$GITHUB_PATH"
-          tools/ffmpeg/ffmpeg -version | head -1
-
-      - name: Restore converted scene cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            site/assets/scenes
-            site/scenes.generated.json
-          key: dublab-browser-scenes-v4
-
-      - name: Patch legacy OGV stream selection
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('scripts/build_student_site.py')
-          s=p.read_text()
-          old="run(['ffmpeg','-y','-i',str(video),'-an','-vf',vf"
-          new="run(['ffmpeg','-y','-i',str(video),'-map','0:v:0','-an','-vf',vf"
-          if old not in s:
-              raise SystemExit('Expected video transcode line not found')
-          p.write_text(s.replace(old,new))
-          PY
-
-      - name: Build student site and scene library
-        run: python scripts/build_student_site.py
+          set -euo pipefail
+          TAG="${RELEASE_TAG:-classroom-build}"
+          mkdir -p /tmp/dublab-release /tmp/dublab-unpacked site
+          echo "Downloading DubLab bundle from release: $TAG"
+          gh release download "$TAG" --repo "$GH_REPO" --pattern '*.zip' --dir /tmp/dublab-release
+          ZIP="$(find /tmp/dublab-release -maxdepth 1 -type f -name '*.zip' | head -n 1)"
+          test -n "$ZIP" || { echo 'No ZIP asset found on the release.'; exit 1; }
+          unzip -q "$ZIP" -d /tmp/dublab-unpacked
+          ROOT="$(find /tmp/dublab-unpacked -type f -name index.html -printf '%h\n' | head -n 1)"
+          test -n "$ROOT" || { echo 'The ZIP does not contain index.html.'; exit 1; }
+          cp -a "$ROOT"/. site/
+          rm -rf site/__pycache__ site/run_server.py "site/Run DubLab.command" site/README.txt
+          touch site/.nojekyll
+          test -f site/index.html
+          test -d site/assets/scenes
+          echo "Classroom bundle ready: $(du -sh site | cut -f1)"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -73,7 +51,7 @@ jobs:
       - name: Upload student site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: "site"
+          path: site
 
       - name: Deploy
         id: deployment
