@@ -20,15 +20,33 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Restore converted scene cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            site/assets/scenes
+            site/scenes.generated.json
+          key: dublab-browser-scenes-v1
+
+      - name: Check media tools
+        run: ffmpeg -version | head -1
+
+      - name: Build student site and scene library
+        run: python scripts/build_student_site.py
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload site
+
+      - name: Upload student site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: "."
+          path: "site"
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
