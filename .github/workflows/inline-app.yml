@@ -15,40 +15,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Build single-file student app
         shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import base64, gzip
-
-          parts = ''.join(Path(f'app/p{i}.txt').read_text() for i in range(4))
-          html = gzip.decompress(base64.b64decode(parts)).decode('utf-8')
-
-          old = """async function unpackScene(s,blob){
-  if(!('DecompressionStream' in window))throw new Error('Please use a current version of Chrome.');
-  const ab=await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(), files=tarFiles(ab), urls=[];"""
-          new = """async function unpackScene(s,blob){
-  let ab=await blob.arrayBuffer();
-  const head=new Uint8Array(ab,0,Math.min(2,ab.byteLength));
-  const isGzip=head.length>=2&&head[0]===0x1f&&head[1]===0x8b;
-  if(isGzip){
-    if(!('DecompressionStream' in window))throw new Error('This browser cannot unpack the compressed scene pack. Use the Safari-compatible class pack or open DubLab in Chrome.');
-    ab=await new Response(new Blob([ab]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
-  }
-  const files=tarFiles(ab), urls=[];"""
-          if old not in html:
-              raise SystemExit('Could not find scene-pack loader to patch')
-          html = html.replace(old, new)
-          Path('index.html').write_text(html)
-          PY
+        run: cat app/p0.txt app/p1.txt app/p2.txt app/p3.txt | tr -d '\n\r ' | base64 -d | gzip -d > index.html
       - name: Commit single-file app
         shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          if git diff --cached --quiet; then
-            echo 'No changes required.'
-          else
-            git commit -m 'Publish DubLab as single-file web app'
-            git push
-          fi
+        run: git config user.name 'github-actions[bot]' && git config user.email '41898282+github-actions[bot]@users.noreply.github.com' && git add index.html && (git diff --cached --quiet || (git commit -m 'Publish DubLab as single-file web app' && git push))
