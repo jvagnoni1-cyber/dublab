@@ -25,35 +25,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Restore FFmpeg cache
+        uses: actions/cache@v4
+        with:
+          path: tools/ffmpeg
+          key: dublab-ffmpeg-master-linux64-v1
+
+      - name: Install current FFmpeg
+        run: |
+          if [ ! -x tools/ffmpeg/ffmpeg ]; then
+            mkdir -p tools/ffmpeg /tmp/ffmpeg-build
+            curl -L --fail --retry 3 -o /tmp/ffmpeg.tar.xz https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz
+            tar -xJf /tmp/ffmpeg.tar.xz -C /tmp/ffmpeg-build --strip-components=1
+            cp /tmp/ffmpeg-build/bin/ffmpeg /tmp/ffmpeg-build/bin/ffprobe tools/ffmpeg/
+            chmod +x tools/ffmpeg/ffmpeg tools/ffmpeg/ffprobe
+          fi
+          echo "$GITHUB_WORKSPACE/tools/ffmpeg" >> "$GITHUB_PATH"
+          tools/ffmpeg/ffmpeg -version | head -1
+
       - name: Restore converted scene cache
         uses: actions/cache@v4
         with:
           path: |
             site/assets/scenes
             site/scenes.generated.json
-          key: dublab-browser-scenes-v3
+          key: dublab-browser-scenes-v4
 
-      - name: Install media tools
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
-          ffmpeg -version | head -1
-
-      - name: Patch source-video handling
+      - name: Patch legacy OGV stream selection
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('scripts/build_student_site.py')
           s=p.read_text()
-          old="video=first(src,[r'^dub_video\\.(ogv|mp4|webm|mkv)$']);backing=first(src,[r'^_backing_track\\.(mp3|ogg|wav|m4a)$'])"
-          new="backing=first(src,[r'^_backing_track\\.(mp3|ogg|wav|m4a)$']); video=work/'preview.mp4'; download(cfg['url'].split('/download/')[0]+'/web/preview.mp4',video)"
+          old="run(['ffmpeg','-y','-i',str(video),'-an','-vf',vf"
+          new="run(['ffmpeg','-y','-i',str(video),'-map','0:v:0','-an','-vf',vf"
           if old not in s:
-              raise SystemExit('Expected source media line not found')
-          s=s.replace(old,new)
-          old2="run(['ffmpeg','-y','-i',str(video),'-an','-vf',vf"
-          new2="run(['ffmpeg','-y','-i',str(video),'-map','0:v:0','-an','-vf',vf"
-          if old2 in s:s=s.replace(old2,new2)
-          p.write_text(s)
+              raise SystemExit('Expected video transcode line not found')
+          p.write_text(s.replace(old,new))
           PY
 
       - name: Build student site and scene library
