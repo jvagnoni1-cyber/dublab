@@ -4,48 +4,564 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#08080a">
-<title>DubLab</title>
-<style>html,body{margin:0;min-height:100%;background:#08080a;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{display:grid;place-items:center;min-height:100vh}.load{max-width:32rem;padding:2rem;text-align:center;color:#aaa}.load b{display:block;color:#fff;font-size:1.5rem;margin-bottom:.5rem}.load small{display:block;margin-top:.75rem;color:#777;line-height:1.4}</style>
+<title>DubLab — Student ADR Studio</title>
+<style>
+:root{--bg:#08080a;--panel:#111115;--panel2:#17171d;--text:#f7f4ef;--muted:#9e9aa5;--line:#29282f;--amber:#ffb34d;--orange:#ff7418;--red:#ff554c;--green:#61d995;--radius:22px;--shadow:0 24px 80px rgba(0,0,0,.45)}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{background:radial-gradient(850px 520px at 82% -15%,rgba(255,114,24,.16),transparent 64%),radial-gradient(700px 500px at 0 0,rgba(98,54,210,.08),transparent 60%),var(--bg)}button{font:inherit}button:focus-visible{outline:3px solid rgba(255,179,77,.5);outline-offset:3px}.app{min-height:100vh}.topbar{height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(8,8,10,.8);backdrop-filter:blur(16px);position:sticky;top:0;z-index:40}.brand{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:.15em;font-size:13px}.brandmark{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;color:#1c1105;background:linear-gradient(135deg,var(--amber),var(--orange));font-weight:1000}.status{font-size:11px;color:#aaa5af;border:1px solid var(--line);border-radius:999px;padding:6px 9px}main{width:min(1160px,100%);margin:0 auto;padding:34px 22px 72px}.screen{display:none}.screen.active{display:block;animation:fade .18s ease-out}@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}.eyebrow{color:var(--amber);font-size:11px;letter-spacing:.17em;text-transform:uppercase;font-weight:900}.library-head{margin:16px 0 25px}.library-head h1{margin:5px 0 10px;font-size:clamp(42px,7vw,82px);line-height:.94;letter-spacing:-.055em}.library-head p{margin:0;color:#bab6c0;font-size:17px}.scenegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.scene-card{position:relative;min-height:310px;border:1px solid var(--line);border-radius:26px;overflow:hidden;background:#121216;cursor:pointer;text-align:left;color:white;padding:0;box-shadow:0 14px 45px rgba(0,0,0,.2);transition:.16s transform,.16s border-color}.scene-card:hover{transform:translateY(-2px);border-color:#403e47}.scene-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(1.06);transform:scale(1.02)}.scene-card:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,9,.98) 0%,rgba(7,7,9,.64) 32%,rgba(7,7,9,.10) 72%,rgba(7,7,9,.18) 100%)}.scene-copy{position:absolute;z-index:2;left:22px;right:22px;bottom:20px}.scene-copy .meta{display:flex;gap:8px;flex-wrap:wrap;color:#c9c4cd;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:7px}.scene-copy h2{font-size:29px;letter-spacing:-.035em;margin:0 0 5px}.scene-copy p{margin:0;color:#bdb8c2}.back{background:none;border:0;color:#b8b3bd;padding:7px 0;font-weight:800;cursor:pointer;margin-bottom:16px}.back:hover{color:#fff}.setup{display:grid;grid-template-columns:.9fr 1.1fr;gap:28px;align-items:start}.scene-poster{position:sticky;top:92px;min-height:560px;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:#111;box-shadow:var(--shadow)}.scene-poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.78) contrast(1.08)}.scene-poster:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,8,.97),rgba(6,6,8,.12) 64%)}.poster-label{position:absolute;z-index:2;left:25px;right:25px;bottom:25px}.poster-label h2{font-size:36px;margin:0 0 7px;letter-spacing:-.04em}.poster-label p{margin:0;color:#c6c0ca}.setup-copy{padding:12px 0}.setup-copy h1{font-size:clamp(40px,6vw,68px);letter-spacing:-.05em;line-height:.95;margin:7px 0 12px}.setup-copy>p{color:#bcb7c2;font-size:18px;line-height:1.5;margin:0 0 27px}.rolelabel{text-transform:uppercase;letter-spacing:.15em;font-size:11px;font-weight:900;color:#aaa5af;margin-bottom:10px}.rolegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.role{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,#17171c,#111115);color:white;padding:18px;text-align:left;cursor:pointer;min-height:96px;position:relative}.role:hover{border-color:#3c3a43}.role.selected{border-color:rgba(255,179,77,.8);box-shadow:inset 0 0 0 1px rgba(255,179,77,.2)}.role strong{font-size:20px;display:block}.role span{display:block;color:var(--muted);margin-top:5px;font-size:13px}.role em{font-style:normal;position:absolute;right:15px;top:15px;color:var(--amber);font-size:11px;font-weight:900}.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:24px}.btn{min-height:50px;border-radius:15px;border:1px solid var(--line);background:#17171d;color:#fff;padding:13px 18px;font-weight:900;cursor:pointer}.btn:hover{border-color:#3d3b44}.btn.primary{border:0;color:#1b1005;background:linear-gradient(135deg,var(--amber),var(--orange));padding-inline:24px;box-shadow:0 12px 34px rgba(255,116,24,.17)}.btn:disabled{opacity:.45;cursor:not-allowed}.microcopy{margin-top:15px;color:#89858f;font-size:12px}.stage-wrap{position:relative;border-radius:24px;overflow:hidden;background:#000;border:1px solid #24232a;box-shadow:var(--shadow)}video{display:block;width:100%;max-height:72vh;aspect-ratio:16/9;object-fit:contain;background:#000}.stage-top{position:absolute;z-index:8;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;pointer-events:none}.pill{background:rgba(7,7,9,.76);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(9px);padding:8px 11px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.06em}.pill.live{color:#ff8b83}.pill.live:before{content:"";width:7px;height:7px;display:inline-block;border-radius:50%;background:var(--red);margin-right:6px}.cue{position:absolute;z-index:12;left:50%;bottom:26px;transform:translateX(-50%);width:min(840px,calc(100% - 24px));text-align:center;pointer-events:none}.cue.hidden{display:none}.cue-status{display:inline-block;background:var(--amber);color:#1a1005;border-radius:999px;padding:7px 10px;font-size:10px;letter-spacing:.11em;font-weight:1000;margin-bottom:7px}.cue-status.speak{background:#fff;color:#111}.cue-speaker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:900;margin-bottom:5px;text-shadow:0 2px 9px #000}.cue-line{font-weight:950;font-size:clamp(19px,3vw,34px);line-height:1.14;letter-spacing:-.025em;text-shadow:0 3px 18px #000,0 2px 3px #000}.subtitle{position:absolute;z-index:10;left:50%;bottom:24px;transform:translateX(-50%);width:min(820px,calc(100% - 24px));text-align:center;font-weight:850;font-size:clamp(16px,2.2vw,25px);text-shadow:0 3px 14px #000,0 2px 3px #000}.subtitle.hidden{display:none}.subtitle .name{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#ddd7df;margin-bottom:4px}.countdown{position:absolute;z-index:18;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);font-size:min(25vw,170px);font-weight:1000;letter-spacing:-.08em;text-shadow:0 5px 30px #000}.countdown.hidden{display:none}.resume{position:absolute;z-index:25;inset:0;background:rgba(0,0,0,.78);display:grid;place-items:center;padding:22px}.resume.hidden{display:none}.resume-card{text-align:center;max-width:420px}.resume-card h3{font-size:30px;margin:0 0 8px}.resume-card p{color:#c3bec8;margin:0 0 15px;line-height:1.45}.playerbar{display:grid;grid-template-columns:1fr auto;gap:13px;align-items:center;margin-top:15px}.progress{height:8px;background:#1d1c22;border-radius:999px;overflow:hidden}.progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--amber),var(--orange));border-radius:inherit}.controls{display:flex;gap:8px}.iconbtn{width:48px;height:48px;border:1px solid var(--line);border-radius:14px;background:#15151a;color:#fff;font-size:17px;cursor:pointer}.player-meta{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-top:17px}.player-meta h2{font-size:25px;letter-spacing:-.03em;margin:0}.player-meta p{color:var(--muted);margin:5px 0 0}.run-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.result-layout{display:grid;grid-template-columns:.78fr 1.22fr;gap:20px;align-items:start}.scorecard,.results-panel{background:#111115;border:1px solid var(--line);border-radius:25px;padding:23px}.scorecard{position:sticky;top:91px}.scorelabel{text-transform:uppercase;letter-spacing:.15em;color:var(--muted);font-size:10px;font-weight:900}.score{font-size:94px;line-height:.95;letter-spacing:-.07em;font-weight:1000;margin:11px 0}.rating{color:var(--amber);font-size:19px;font-weight:900;margin-bottom:22px}.metric{margin-top:15px}.metric-head{display:flex;justify-content:space-between;font-size:12px;font-weight:850;margin-bottom:7px}.bar{height:8px;background:#25242b;border-radius:999px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--amber),var(--orange))}.feedback{border-top:1px solid var(--line);padding-top:18px;margin-top:20px;color:#c8c2cc;line-height:1.5}.results-panel h3{font-size:21px;margin:0 0 12px}.line-result{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:13px 2px;border-top:1px solid #24232a}.line-result:first-of-type{border-top:0}.line-score{width:40px;height:40px;border-radius:12px;background:#1c1b21;display:grid;place-items:center;color:var(--amber);font-weight:900}.line-result strong{font-size:13px;display:block}.line-result span{display:block;color:var(--muted);font-size:11px;margin-top:3px;max-width:520px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timing{text-align:right!important;color:#bbb6c0!important}.notice{position:fixed;z-index:100;left:50%;bottom:20px;transform:translate(-50%,14px);opacity:0;background:#1a191f;border:1px solid #403e47;padding:11px 14px;border-radius:13px;pointer-events:none;transition:.18s;max-width:min(560px,calc(100% - 24px));text-align:center}.notice.show{opacity:1;transform:translate(-50%,0)}@media(max-width:820px){main{padding:25px 14px 62px}.scenegrid,.setup,.result-layout{grid-template-columns:1fr}.scene-card{min-height:270px}.scene-poster{position:relative;top:auto;min-height:320px}.rolegrid{grid-template-columns:1fr 1fr}.scorecard{position:relative;top:auto}.player-meta{display:block}.run-actions{justify-content:flex-start;margin-top:13px}}@media(max-width:520px){.topbar{padding:0 14px}.status{display:none}.scenegrid{grid-template-columns:1fr}.scene-card{min-height:245px}.rolegrid{grid-template-columns:1fr}.setup-copy h1{font-size:42px}.playerbar{grid-template-columns:1fr}.controls{justify-content:flex-end}.line-result{grid-template-columns:42px 1fr}.timing{grid-column:2;text-align:left!important;margin-top:1px!important}}
+
+.top-actions{display:flex;align-items:center;gap:8px}.topnav{border:1px solid var(--line);background:#121217;color:#aaa5af;border-radius:12px;padding:8px 11px;font-weight:850;cursor:pointer}.topnav:hover,.topnav.active{color:#fff;border-color:#4a4650;background:#1a191f}.topnav b{color:var(--amber);font-size:10px;margin-left:4px}.option-card{margin-top:18px;border:1px solid var(--line);background:#111115;border-radius:18px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:18px}.option-card strong{display:block;font-size:14px}.option-card span{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.35}.switch{position:relative;width:48px;height:28px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.switch i{position:absolute;inset:0;border-radius:99px;background:#2b2930;cursor:pointer;transition:.15s}.switch i:after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;left:3px;top:3px;background:#fff;transition:.15s}.switch input:checked+i{background:linear-gradient(135deg,var(--amber),var(--orange))}.switch input:checked+i:after{transform:translateX(20px)}
+.seekbar{width:100%;height:28px;accent-color:var(--orange);cursor:pointer;background:transparent}.seekbar:disabled{opacity:.45;cursor:not-allowed}.seek-wrap{position:relative}.seek-hint{position:absolute;right:0;top:-17px;color:#716d77;font-size:10px;font-weight:800}.countdown{background:rgba(0,0,0,.5);text-align:center}.count-stack{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}.count-num{font-size:min(25vw,170px);line-height:.85;font-weight:1000;letter-spacing:-.08em}.count-next{margin-top:18px;max-width:min(780px,90vw);font-size:clamp(16px,2.2vw,25px);line-height:1.25;letter-spacing:-.02em;font-weight:850;text-shadow:0 3px 16px #000}.count-next small{display:block;color:var(--amber);text-transform:uppercase;letter-spacing:.14em;font-size:10px;margin-bottom:5px}.dubgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.dub-card{border:1px solid var(--line);border-radius:22px;background:#111115;overflow:hidden;display:grid;grid-template-columns:150px 1fr;min-height:150px}.dub-thumb{position:relative;background:#09090b}.dub-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.dub-score{position:absolute;left:10px;bottom:10px;background:rgba(7,7,9,.82);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:7px 9px;font-weight:950;color:var(--amber)}.dub-copy{padding:17px}.dub-copy h3{margin:3px 0 5px;font-size:20px;letter-spacing:-.025em}.dub-copy p{margin:0;color:var(--muted);font-size:12px}.dub-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.dub-actions .btn{min-height:38px;padding:8px 11px;border-radius:11px;font-size:12px}.empty-dubs{grid-column:1/-1;border:1px dashed #37343d;border-radius:24px;padding:46px 24px;text-align:center;color:#8d8893}.empty-dubs strong{display:block;color:#fff;font-size:22px;margin-bottom:6px}.save-note{margin-top:12px;color:var(--green);font-size:11px;font-weight:850;min-height:16px}.exporting{position:fixed;z-index:150;inset:0;background:rgba(5,5,7,.91);backdrop-filter:blur(10px);display:grid;place-items:center;padding:24px}.exporting.hidden{display:none}.export-card{width:min(520px,100%);background:#141419;border:1px solid #34313a;border-radius:24px;padding:26px;text-align:center;box-shadow:var(--shadow)}.export-card h3{font-size:27px;margin:0 0 8px}.export-card p{color:#aaa5af;line-height:1.45;margin:0 0 18px}.export-progress{height:9px;border-radius:99px;background:#29272e;overflow:hidden}.export-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--orange))}.export-time{margin-top:9px;color:#c8c2cc;font-size:12px}.danger{color:#ff8d86!important}.hidden-export-video{position:fixed;left:-10000px;top:0;width:1280px;height:720px;opacity:.01;pointer-events:none}
+@media(max-width:820px){.dubgrid{grid-template-columns:1fr}.top-actions .status{display:none}}@media(max-width:560px){.topnav{padding:7px 9px;font-size:12px}.dub-card{grid-template-columns:105px 1fr}.dub-copy{padding:13px}.option-card{align-items:flex-start}}
+
+</style>
 </head>
-<body><div class="load" id="s"><b>DubLab</b>Loading the studio…</div>
+<body>
+<div class="app">
+<header class="topbar"><div class="brand"><span class="brandmark">D</span>DUBLAB</div><div class="top-actions"><button class="topnav active" data-nav="library">Scenes</button><button class="topnav" data-nav="dubs">Dubbed <b id="dubCount">0</b></button><span class="status">STUDENT WEB BUILD · MP4 EXPORT</span></div></header>
+<main>
+<section class="screen active" id="library">
+  <div class="library-head"><div class="eyebrow">Scene library</div><h1>Pick a scene.<br>Take the role.</h1><p>Real scene packs. Original dialogue in, your dialogue out.</p></div>
+  <p style="max-width:760px;color:#8f8a95;margin:-8px 0 22px;line-height:1.5">Your teacher provides the scene-pack files separately. The first time you open a scene, choose its pack file. DubLab stores it privately in this browser for later sessions.</p><div class="scenegrid" id="sceneGrid"></div>
+</section>
+<section class="screen" id="dubs">
+  <div class="library-head"><div class="eyebrow">Dubbed library</div><h1>Your dubs.</h1><p>Completed takes are saved on this device. Replay, review or export them whenever you want.</p></div>
+  <div class="dubgrid" id="dubGrid"><div class="empty-dubs"><strong>No dubs yet.</strong>Finish a take and it will appear here automatically.</div></div>
+</section>
+<section class="screen" id="setup">
+  <button class="back" data-go="library">← Scene library</button>
+  <div class="setup">
+    <div class="scene-poster"><img id="setupIcon" alt=""><div class="poster-label"><h2 id="posterTitle"></h2><p id="posterMeta"></p></div></div>
+    <div class="setup-copy"><div class="eyebrow">Choose your role</div><h1 id="setupTitle"></h1><p>Watch it once, then replace one character while the rest of the scene stays intact.</p><div class="rolelabel">Who are you dubbing?</div><div class="rolegrid" id="roleGrid"></div><div class="option-card"><div><strong>Countdown between sections</strong><span>DubLab pauses briefly before each new chunk of your dialogue, then gives you 3 · 2 · 1 before rolling again.</span></div><label class="switch"><input id="sectionCountdownToggle" type="checkbox" checked><i></i></label></div><div class="actions"><button class="btn" id="watchOriginalBtn">▶ Watch original</button><button class="btn primary" id="startDubBtn">● Start dub</button></div><div class="microcopy">Headphones recommended. Countdown pauses are removed from the saved dub, so playback stays in sync with the original scene.</div></div>
+  </div>
+</section>
+<section class="screen" id="player">
+  <button class="back" id="playerBack">← Back</button>
+  <div class="stage-wrap">
+    <video id="video" playsinline preload="auto" muted></video><audio id="bed" preload="auto"></audio><audio id="takeAudio" preload="auto"></audio>
+    <div class="stage-top"><span class="pill" id="modePill">ORIGINAL</span><span class="pill" id="timePill">0:00 / 0:00</span></div>
+    <div class="countdown hidden" id="countdown"><div class="count-stack"><div class="count-num" id="countNum">3</div><div class="count-next" id="countNext"></div></div></div>
+    <div class="cue hidden" id="cue"><div class="cue-status" id="cueStatus">GET READY</div><div class="cue-speaker" id="cueSpeaker"></div><div class="cue-line" id="cueLine"></div></div>
+    <div class="subtitle hidden" id="subtitle"><div class="name" id="subName"></div><div id="subLine"></div></div>
+    <div class="resume hidden" id="resume"><div class="resume-card"><h3>Playback needs a tap</h3><p>The video did not start. Tap once to retry the picture; DubLab audio will stay on the same clock.</p><button class="btn primary" id="resumeBtn">▶ Retry playback</button></div></div>
+  </div>
+  <div class="playerbar"><div class="seek-wrap"><span class="seek-hint" id="seekHint">Drag to scrub</span><input class="seekbar" id="seekBar" type="range" min="0" max="1000" value="0" step="1" aria-label="Playback position"></div><div class="controls"><button class="iconbtn" id="toggleBtn">❚❚</button><button class="iconbtn" id="restartBtn">↺</button></div></div>
+  <div class="player-meta"><div><h2 id="playerTitle"></h2><p id="playerSub"></p></div><div class="run-actions"><button class="btn" id="originalAgainBtn">Original</button><button class="btn primary" id="recordAgainBtn">● Record take</button></div></div>
+</section>
+<section class="screen" id="review">
+  <button class="back" id="reviewBack">← Role select</button>
+  <div class="result-layout"><div class="scorecard"><div class="scorelabel" id="reviewRole"></div><div class="score" id="overallScore">--</div><div class="rating" id="rating">Analysing…</div><div class="metric"><div class="metric-head"><span>Timing</span><span id="timingScore">--</span></div><div class="bar"><i id="timingBar"></i></div></div><div class="metric"><div class="metric-head"><span>Delivery</span><span id="deliveryScore">--</span></div><div class="bar"><i id="deliveryBar"></i></div></div><div class="metric"><div class="metric-head"><span>Recording</span><span id="qualityScore">--</span></div><div class="bar"><i id="qualityBar"></i></div></div><div class="feedback" id="feedback">Analysing your take…</div><div class="save-note" id="saveNote"></div><div class="actions"><button class="btn primary" id="playTakeBtn" disabled>▶ Play my dub</button><button class="btn" id="downloadBtn" disabled>⇩ Download MP4</button><button class="btn" id="retryBtn">↺ Try again</button></div></div><div class="results-panel"><h3>Line timing</h3><div id="lineResults"></div></div></div>
+</section>
+</main></div><input id="packInput" type="file" accept=".tar.gz,.tgz,.gz,application/gzip" hidden><div class="exporting hidden" id="exportOverlay"><div class="export-card"><h3>Rendering your dub</h3><p>DubLab is combining the picture, scene audio and your take. Export runs in real time so the finished file stays in sync.</p><div class="export-progress"><i id="exportFill"></i></div><div class="export-time" id="exportTime">Preparing…</div></div></div><div class="notice" id="notice"></div>
 <script>
-(async()=>{
- const status=document.getElementById('s');
- const loadPako=()=>new Promise((resolve,reject)=>{
-   if(window.pako)return resolve();
-   const x=document.createElement('script');
-   x.src='https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js';
-   x.onload=resolve;x.onerror=()=>reject(new Error('Could not load the compatibility decoder. Check your internet connection and refresh.'));
-   document.head.appendChild(x);
- });
- async function gunzipBytes(u){
-   if('DecompressionStream' in window){
-     const stream=new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'));
-     return new Uint8Array(await new Response(stream).arrayBuffer());
-   }
-   status.innerHTML='<b>DubLab</b>Loading browser compatibility layer…';
-   await loadPako();
-   return window.pako.ungzip(u);
- }
- window.__dublabGunzip=async blob=>{
-   const u=new Uint8Array(await blob.arrayBuffer());
-   const out=await gunzipBytes(u);
-   return out.buffer.slice(out.byteOffset,out.byteOffset+out.byteLength);
- };
- try{
-  const parts=await Promise.all([0,1,2,3].map(async i=>{const r=await fetch(`app/p${i}.txt?v=3`);if(!r.ok)throw new Error(`Missing app part ${i}`);return r.text()}));
-  const b=atob(parts.join('').replace(/\s/g,'')),u=new Uint8Array(b.length);
-  for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);
-  const out=await gunzipBytes(u);
-  let t=new TextDecoder().decode(out);
-  const oldPack=`async function unpackScene(s,blob){\n  if(!('DecompressionStream' in window))throw new Error('Please use a current version of Chrome.');\n  const ab=await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(), files=tarFiles(ab), urls=[];`;
-  const newPack=`async function unpackScene(s,blob){\n  const ab=await window.__dublabGunzip(blob), files=tarFiles(ab), urls=[];`;
-  t=t.replace(oldPack,newPack);
-  document.open();document.write(t);document.close();
- }catch(e){
-  console.error(e);
-  const msg=(e&&e.message)?e.message:'Unknown startup error';
-  status.innerHTML='<b>DubLab could not start</b>'+msg+'<small>Refresh the page. If it still fails, send Mr V a screenshot of this message.</small>';
- }
-})();
+const SCENES={"mustafar":{"id":"mustafar","title":"Mustafar Duel Ending","subtitle":"Star Wars · Revenge of the Sith","duration":83.4,"preRoll":2.4,"video":"assets/scenes/mustafar/video.mp4","icon":"","original":"assets/scenes/mustafar/original.mp3","beds":{"Obi-Wan":"assets/scenes/mustafar/no_obiwan.mp3","Anakin":"assets/scenes/mustafar/no_anakin.mp3","Everyone":"assets/scenes/mustafar/no_everyone.mp3"},"roles":["Obi-Wan","Anakin"],"lines":[{"id":"01_obiwan1","t":4.99,"d":5.013,"c":"Obi-Wan","text":"It's over, Anakin! I have the high ground!","ref":"assets/scenes/mustafar/refs/01_obiwan1.mp3","vo":0.94,"vd":3.04},{"id":"02_anakin1","t":11.03,"d":4.16,"c":"Anakin","text":"You underestimate my power!","ref":"assets/scenes/mustafar/refs/02_anakin1.mp3","vo":1.08,"vd":2.26},{"id":"03_obiwan2","t":15.42,"d":1.088,"c":"Obi-Wan","text":"Don't try it","ref":"assets/scenes/mustafar/refs/03_obiwan2.mp3","vo":0.36,"vd":0.68},{"id":"04_obiwan3a","t":39.49,"d":2.112,"c":"Obi-Wan","text":"You Were The Chosen One","ref":"assets/scenes/mustafar/refs/04_obiwan3a.mp3","vo":0.36,"vd":1.38},{"id":"04_obiwan3b","t":42.85,"d":3.861,"c":"Obi-Wan","text":"It was said that you would destroy the Sith, not join them!","ref":"assets/scenes/mustafar/refs/04_obiwan3b.mp3","vo":0.48,"vd":2.76},{"id":"04_obiwan3c","t":48.36,"d":4.885,"c":"Obi-Wan","text":"Bring balance to the Force, not leave it in darkness!","ref":"assets/scenes/mustafar/refs/04_obiwan3c.mp3","vo":0.62,"vd":3.58},{"id":"05_anakin2","t":64.26,"d":2.155,"c":"Anakin","text":"I HATE YOU!","ref":"assets/scenes/mustafar/refs/05_anakin2.mp3","vo":0.02,"vd":1.8},{"id":"06_obiwan4a","t":74.16,"d":2.048,"c":"Obi-Wan","text":"You were my brother, Anakin!","ref":"assets/scenes/mustafar/refs/06_obiwan4a.mp3","vo":0.42,"vd":1.3},{"id":"06_obiwan4b","t":78.17,"d":1.685,"c":"Obi-Wan","text":"I loved you","ref":"assets/scenes/mustafar/refs/06_obiwan4b.mp3","vo":0.5,"vd":0.76}]},"obsession":{"id":"obsession","title":"Obsession — Diner Scene","subtitle":"Nikki & Bear","duration":75.1,"preRoll":2.4,"video":"assets/scenes/obsession/video.mp4","icon":"","original":"assets/scenes/obsession/original.mp3","beds":{"Everyone":"assets/scenes/obsession/no_everyone.mp3","Nikki":"assets/scenes/obsession/no_nikki.mp3","Bear":"assets/scenes/obsession/no_bear.mp3"},"roles":["Nikki","Bear"],"lines":[{"id":"01_nikki1","t":0.0,"d":3.762,"c":"Nikki","text":"Bear, I love you so, so, so, so, so much...","ref":"assets/scenes/obsession/refs/01_nikki1.mp3","vo":0.4,"vd":3.02},{"id":"02_nikki2","t":4.07,"d":2.482,"c":"Nikki","text":"...I don't think I could live without you.","ref":"assets/scenes/obsession/refs/02_nikki2.mp3","vo":0.22,"vd":1.7},{"id":"03_bear1","t":10.81,"d":3.056,"c":"Bear","text":"You love me more than... anyone in the world?","ref":"assets/scenes/obsession/refs/03_bear1.mp3","vo":0.3,"vd":2.16},{"id":"04_nikki3","t":17.684,"d":3.291,"c":"Nikki","text":"[softly chuckling] Yes, more than anyone...","ref":"assets/scenes/obsession/refs/04_nikki3.mp3","vo":0.54,"vd":1.64},{"id":"05_bear2","t":23.59,"d":1.019,"c":"Bear","text":"...Nikki...","ref":"assets/scenes/obsession/refs/05_bear2.mp3","vo":0.4,"vd":0.26},{"id":"06_nikki4","t":26.192,"d":0.967,"c":"Nikki","text":"Yeah?","ref":"assets/scenes/obsession/refs/06_nikki4.mp3","vo":0.24,"vd":0.28},{"id":"07_bear3","t":27.927,"d":2.299,"c":"Bear","text":"Does your Dad really have cancer?","ref":"assets/scenes/obsession/refs/07_bear3.mp3","vo":0.36,"vd":1.34},{"id":"08_nikki5","t":44.744,"d":1.123,"c":"Nikki","text":"No...","ref":"assets/scenes/obsession/refs/08_nikki5.mp3","vo":0.14,"vd":0.88},{"id":"09_nikki6","t":49.249,"d":3.187,"c":"Nikki","text":"[soft chuckle] No, no, no...","ref":"assets/scenes/obsession/refs/09_nikki6.mp3","vo":0.26,"vd":2.58},{"id":"10_bear4","t":52.352,"d":0.679,"c":"Bear","text":"What?!","ref":"assets/scenes/obsession/refs/10_bear4.mp3","vo":0.18,"vd":0.36},{"id":"11_nikki7","t":52.952,"d":2.873,"c":"Nikki","text":"No... no, no, no...","ref":"assets/scenes/obsession/refs/11_nikki7.mp3","vo":0.26,"vd":2.12},{"id":"12_nikki8","t":55.722,"d":3.631,"c":"Nikki","text":"No, no, no, NO, DON'T DO THAT!!!","ref":"assets/scenes/obsession/refs/12_nikki8.mp3","vo":0.86,"vd":2.48},{"id":"13_nikki9","t":59.559,"d":2.9,"c":"Nikki","text":"I thought we were having a nice daaaate!!","ref":"assets/scenes/obsession/refs/13_nikki9.mp3","vo":0.12,"vd":2.62},{"id":"14_bear5","t":61.694,"d":1.437,"c":"Bear","text":"We are, we are! Sit down...","ref":"assets/scenes/obsession/refs/14_bear5.mp3","vo":0.04,"vd":1.32},{"id":"15_nikki10","t":62.595,"d":4.728,"c":"Nikki","text":"[Throwing a fit] Why does it matter, I thought we were having a nice daaaaaaate...!","ref":"assets/scenes/obsession/refs/15_nikki10.mp3","vo":0.1,"vd":4.58},{"id":"16_bear6","t":65.452,"d":0.549,"c":"Bear","text":"We are!","ref":"assets/scenes/obsession/refs/16_bear6.mp3","vo":0.04,"vd":0.28},{"id":"17_bear7","t":66.652,"d":1.933,"c":"Bear","text":"(gradually whispering) We are, we are... we are...!","ref":"assets/scenes/obsession/refs/17_bear7.mp3","vo":0.04,"vd":1.48},{"id":"18_bear8","t":69.468,"d":3.135,"c":"Bear","text":"It's ok... we are!","ref":"assets/scenes/obsession/refs/18_bear8.mp3","vo":0.14,"vd":2.22},{"id":"19_bear9","t":72.505,"d":1.019,"c":"Bear","text":"We are...!","ref":"assets/scenes/obsession/refs/19_bear9.mp3","vo":0.08,"vd":0.52}]},"apex":{"id":"apex","title":"Apex","subtitle":"Ben","duration":91.2,"preRoll":2.4,"video":"assets/scenes/apex/video.mp4","icon":"","original":"assets/scenes/apex/original.mp3","beds":{"Everyone":"assets/scenes/apex/no_everyone.mp3","Ben":"assets/scenes/apex/no_ben.mp3"},"roles":["Ben"],"lines":[{"id":"01_ben","t":9.278,"d":2.928,"c":"Ben","text":"So, I’ve restocked your provisions and supplies.","ref":"assets/scenes/apex/refs/01_ben.mp3","vo":0.5,"vd":1.88},{"id":"02_ben","t":12.795,"d":3.072,"c":"Ben","text":"I’ve kept your phone, but I threw in a few extras to level the playing field.","ref":"assets/scenes/apex/refs/02_ben.mp3","vo":0.14,"vd":2.8},{"id":"03_ben","t":16.65,"d":1.224,"c":"Ben","text":"You got the right shoes on?","ref":"assets/scenes/apex/refs/03_ben.mp3","vo":0.32,"vd":0.88},{"id":"04_ben","t":19.706,"d":1.008,"c":"Ben","text":"You’ll be fine.","ref":"assets/scenes/apex/refs/04_ben.mp3","vo":0.12,"vd":0.4},{"id":"05_ben","t":20.962,"d":1.416,"c":"Ben","text":"So look, it’s very simple.","ref":"assets/scenes/apex/refs/05_ben.mp3","vo":0.26,"vd":0.86},{"id":"06_ben","t":22.679,"d":2.928,"c":"Ben","text":"You’ve got until the very end of this song to get as far away from me as you can.","ref":"assets/scenes/apex/refs/06_ben.mp3","vo":0.14,"vd":2.28},{"id":"07_ben","t":25.584,"d":0.984,"c":"Ben","text":"Okay?","ref":"assets/scenes/apex/refs/07_ben.mp3","vo":0.06,"vd":0.74},{"id":"08_ben","t":26.973,"d":1.128,"c":"Ben","text":"Okay?","ref":"assets/scenes/apex/refs/08_ben.mp3","vo":0.16,"vd":0.24},{"id":"09_ben","t":29.537,"d":1.224,"c":"Ben","text":"What’s the matter?","ref":"assets/scenes/apex/refs/09_ben.mp3","vo":0.1,"vd":1.1},{"id":"10_ben","t":33.219,"d":1.224,"c":"Ben","text":"I thought you liked danger.","ref":"assets/scenes/apex/refs/10_ben.mp3","vo":0.02,"vd":0.94},{"id":"11_ben","t":44.275,"d":1.224,"c":"Ben","text":"[screeches menacingly]","ref":"assets/scenes/apex/refs/11_ben.mp3","vo":0.0,"vd":0.78}]},"twilight":{"id":"twilight","title":"I Know What You Are","subtitle":"Twilight · Bella & Edward","duration":105.017,"preRoll":2.4,"video":"assets/scenes/twilight/video.mp4","icon":"","original":"assets/scenes/twilight/original.mp3","beds":{"Everyone":"assets/scenes/twilight/no_everyone.mp3","Bella":"assets/scenes/twilight/no_bella.mp3","Edward":"assets/scenes/twilight/no_edward.mp3"},"roles":["Bella","Edward"],"lines":[{"id":"01_bella1","t":5.712,"d":4.258,"c":"Bella","text":"[Gasps] You're impossibly fast... and strong...","ref":"assets/scenes/twilight/refs/01_bella1.mp3","vo":0.36,"vd":3.0},{"id":"02_bella2","t":9.883,"d":4.049,"c":"Bella","text":"Your skin is... pale white and ice cold...","ref":"assets/scenes/twilight/refs/02_bella2.mp3","vo":0.76,"vd":2.7},{"id":"03_bella3","t":13.846,"d":2.926,"c":"Bella","text":"Your eyes change color... [small gasp]","ref":"assets/scenes/twilight/refs/03_bella3.mp3","vo":0.66,"vd":1.12},{"id":"04_bella4","t":16.682,"d":5.016,"c":"Bella","text":"And sometimes you speak, like... like you're from a different time.","ref":"assets/scenes/twilight/refs/04_bella4.mp3","vo":0.74,"vd":4.08},{"id":"05_bella5","t":22.98,"d":4.336,"c":"Bella","text":"You never eat or drink anything... you don't go out in the sunlight...","ref":"assets/scenes/twilight/refs/05_bella5.mp3","vo":0.26,"vd":2.88},{"id":"06_bella6","t":28.652,"d":3.422,"c":"Bella","text":"[Gasps] ...How old are you?","ref":"assets/scenes/twilight/refs/06_bella6.mp3","vo":0.26,"vd":2.56},{"id":"07_edwa1","t":32.823,"d":1.959,"c":"Edward","text":"[Under his breath] ...I'm seventeen.","ref":"assets/scenes/twilight/refs/07_edwa1.mp3","vo":0.6,"vd":0.74},{"id":"08_bella7","t":36.91,"d":3.971,"c":"Bella","text":"How long you've been seventeen? ...[surprised gasp]","ref":"assets/scenes/twilight/refs/08_bella7.mp3","vo":0.38,"vd":2.98},{"id":"09_edwa2","t":42.708,"d":1.123,"c":"Edward","text":"A while.","ref":"assets/scenes/twilight/refs/09_edwa2.mp3","vo":0.34,"vd":0.54},{"id":"10_bella8","t":43.751,"d":2.377,"c":"Bella","text":"[surprised gasp]","ref":"assets/scenes/twilight/refs/10_bella8.mp3","vo":0.04,"vd":2.06},{"id":"11_bella9","t":51.175,"d":0.836,"c":"Bella","text":"[sudden, sharp gasp]","ref":"assets/scenes/twilight/refs/11_bella9.mp3","vo":0.24,"vd":0.2},{"id":"12_bella10","t":56.722,"d":1.593,"c":"Bella","text":"[gasp] I know what you are.","ref":"assets/scenes/twilight/refs/12_bella10.mp3","vo":0.48,"vd":0.88},{"id":"13_edwa3","t":61.268,"d":1.672,"c":"Edward","text":"So say it.","ref":"assets/scenes/twilight/refs/13_edwa3.mp3","vo":0.48,"vd":0.68},{"id":"14_edwa4","t":66.398,"d":1.541,"c":"Edward","text":"[whispering] Out loud.","ref":"assets/scenes/twilight/refs/14_edwa4.mp3","vo":0.36,"vd":0.7},{"id":"15_edwa5","t":70.652,"d":1.254,"c":"Edward","text":"[sternly] Say it.","ref":"assets/scenes/twilight/refs/15_edwa5.mp3","vo":0.38,"vd":0.38},{"id":"16_bella11","t":78.077,"d":1.332,"c":"Bella","text":"Vampire.","ref":"assets/scenes/twilight/refs/16_bella11.mp3","vo":0.26,"vd":0.52},{"id":"17_edwa6","t":82.79,"d":1.384,"c":"Edward","text":"Are you afraid?","ref":"assets/scenes/twilight/refs/17_edwa6.mp3","vo":0.28,"vd":0.74},{"id":"18_bella12","t":85.876,"d":1.254,"c":"Bella","text":"[frightened gasp]","ref":"assets/scenes/twilight/refs/18_bella12.mp3","vo":0.24,"vd":0.34},{"id":"19_bella13","t":92.633,"d":0.967,"c":"Bella","text":"No.","ref":"assets/scenes/twilight/refs/19_bella13.mp3","vo":0.24,"vd":0.26},{"id":"20_edwa7","t":96.345,"d":4.937,"c":"Edward","text":"Then ask me the most basic question... What do we eat?","ref":"assets/scenes/twilight/refs/20_edwa7.mp3","vo":0.22,"vd":3.94},{"id":"21_bella14","t":104.103,"d":1.123,"c":"Bella","text":"You won't hurt me.","ref":"assets/scenes/twilight/refs/21_bella14.mp3","vo":0.16,"vd":0.84}]},"shrek":{"id":"shrek","title":"Muffin Man","subtitle":"Shrek · Interrogation Scene","duration":232.542,"preRoll":2.4,"video":"assets/scenes/shrek/video.mp4","icon":"","original":"assets/scenes/shrek/original.mp3","beds":{"Everyone":"assets/scenes/shrek/no_everyone.mp3","Gingerbread Man":"assets/scenes/shrek/no_gingerbread_man.mp3","Lord Farquaad":"assets/scenes/shrek/no_lord_farquaad.mp3","Guard":"assets/scenes/shrek/no_guard.mp3","Mirror":"assets/scenes/shrek/no_mirror.mp3","Thelonius":"assets/scenes/shrek/no_thelonius.mp3"},"roles":["Gingerbread Man","Lord Farquaad","Guard","Mirror","Thelonius"],"lines":[{"id":"01_gingerbread_man","t":0.312,"d":3.288,"c":"Gingerbread Man","text":"*drowning sounds*","ref":"assets/scenes/shrek/refs/01_gingerbread_man.mp3","vo":0.26,"vd":2.999},{"id":"02_gingerbread_man","t":6.612,"d":3.864,"c":"Gingerbread Man","text":"*choking and coughing*","ref":"assets/scenes/shrek/refs/02_gingerbread_man.mp3","vo":0.42,"vd":3.418},{"id":"03_gingerbread_man","t":25.725,"d":1.368,"c":"Gingerbread Man","text":"You're a monster!","ref":"assets/scenes/shrek/refs/03_gingerbread_man.mp3","vo":0.08,"vd":1.24},{"id":"04_gingerbread_man","t":35.618,"d":1.344,"c":"Gingerbread Man","text":"EAT ME! *spits*","ref":"assets/scenes/shrek/refs/04_gingerbread_man.mp3","vo":0.0,"vd":1.12},{"id":"05_gingerbread_man","t":44.792,"d":3.672,"c":"Gingerbread Man","text":"NOOO, not the buttons...not my gumdrop ...buttons.","ref":"assets/scenes/shrek/refs/05_gingerbread_man.mp3","vo":0.0,"vd":3.632},{"id":"06_gingerbread_man","t":50.384,"d":4.92,"c":"Gingerbread Man","text":"Okay, I'll tell you...do you know the muffin man?","ref":"assets/scenes/shrek/refs/06_gingerbread_man.mp3","vo":0.22,"vd":4.669},{"id":"07_gingerbread_man","t":56.404,"d":1.32,"c":"Gingerbread Man","text":"The muffin man","ref":"assets/scenes/shrek/refs/07_gingerbread_man.mp3","vo":0.16,"vd":1.08},{"id":"08_gingerbread_man","t":61.247,"d":3.576,"c":"Gingerbread Man","text":"Well, she's married to the muffin man.","ref":"assets/scenes/shrek/refs/08_gingerbread_man.mp3","vo":0.12,"vd":3.415},{"id":"09_gingerbread_man","t":65.742,"d":1.464,"c":"Gingerbread Man","text":"THE MUFFIN MAN!","ref":"assets/scenes/shrek/refs/09_gingerbread_man.mp3","vo":0.04,"vd":1.384},{"id":"10_gingerbread_man","t":69.678,"d":0.12,"c":"Gingerbread Man","text":"*gasp*","ref":"assets/scenes/shrek/refs/10_gingerbread_man.mp3","vo":0,"vd":0.083},{"id":"11_gingerbread_man","t":87.632,"d":1.608,"c":"Gingerbread Man","text":"*gasping in awe*","ref":"assets/scenes/shrek/refs/11_gingerbread_man.mp3","vo":0.02,"vd":1.12},{"id":"12_gingerbread_man","t":91.438,"d":3.456,"c":"Gingerbread Man","text":"Don't tell him anything! NOOO!","ref":"assets/scenes/shrek/refs/12_gingerbread_man.mp3","vo":0.06,"vd":3.359},{"id":"13_gingerbread_man","t":95.716,"d":1.368,"c":"Gingerbread Man","text":"Owww!","ref":"assets/scenes/shrek/refs/13_gingerbread_man.mp3","vo":0.5,"vd":0.48},{"id":"201_lord_farquaad","t":3.554,"d":2.808,"c":"Lord Farquaad","text":"That's enough! He's ready to talk.","ref":"assets/scenes/shrek/refs/201_lord_farquaad.mp3","vo":0.0,"vd":2.64},{"id":"202_lord_farquaad","t":10.456,"d":4.896,"c":"Lord Farquaad","text":"*laughing*","ref":"assets/scenes/shrek/refs/202_lord_farquaad.mp3","vo":0.08,"vd":4.52},{"id":"203_lord_farquaad","t":15.775,"d":1.224,"c":"Lord Farquaad","text":"AHEM!","ref":"assets/scenes/shrek/refs/203_lord_farquaad.mp3","vo":0.22,"vd":0.72},{"id":"204_lord_farquaad","t":19.412,"d":6.384,"c":"Lord Farquaad","text":"Run run run, as fast as you can, you can't catch me, I'm the gingerbread man!","ref":"assets/scenes/shrek/refs/204_lord_farquaad.mp3","vo":0.42,"vd":5.78},{"id":"205_lord_farquaad","t":27.067,"d":2.208,"c":"Lord Farquaad","text":"I'm not a monster here - you are!","ref":"assets/scenes/shrek/refs/205_lord_farquaad.mp3","vo":0.16,"vd":1.88},{"id":"206_lord_farquaad","t":29.376,"d":4.632,"c":"Lord Farquaad","text":"You and the rest of that fairytale trash poisoning my perfect world.","ref":"assets/scenes/shrek/refs/206_lord_farquaad.mp3","vo":0.08,"vd":4.12},{"id":"207_lord_farquaad","t":34.055,"d":1.776,"c":"Lord Farquaad","text":"Now tell me, WHERE ARE THE OTHERS?","ref":"assets/scenes/shrek/refs/207_lord_farquaad.mp3","vo":0.24,"vd":1.44},{"id":"208_lord_farquaad","t":36.939,"d":1.008,"c":"Lord Farquaad","text":"NARGH!","ref":"assets/scenes/shrek/refs/208_lord_farquaad.mp3","vo":0.0,"vd":0.4},{"id":"209_lord_farquaad","t":38.184,"d":6.864,"c":"Lord Farquaad","text":"I've tried to be fair to you creatures, now my patience has REACHED ITS END! Tell me or I'll...!","ref":"assets/scenes/shrek/refs/209_lord_farquaad.mp3","vo":0.3,"vd":6.529},{"id":"210_lord_farquaad","t":48.15,"d":2.04,"c":"Lord Farquaad","text":"ALRIGHT THEN, who's hiding them?","ref":"assets/scenes/shrek/refs/210_lord_farquaad.mp3","vo":0.0,"vd":1.44},{"id":"211_lord_farquaad","t":55.343,"d":1.08,"c":"Lord Farquaad","text":"The muffin man?","ref":"assets/scenes/shrek/refs/211_lord_farquaad.mp3","vo":0.14,"vd":0.8},{"id":"212_lord_farquaad","t":57.686,"d":3.6,"c":"Lord Farquaad","text":"Yes...I know the muffin man, who lives on Drury Lane?","ref":"assets/scenes/shrek/refs/212_lord_farquaad.mp3","vo":0.24,"vd":3.06},{"id":"213_lord_farquaad","t":64.765,"d":1.128,"c":"Lord Farquaad","text":"The muffin man?!","ref":"assets/scenes/shrek/refs/213_lord_farquaad.mp3","vo":0.1,"vd":0.98},{"id":"214_lord_farquaad","t":67.078,"d":2.28,"c":"Lord Farquaad","text":"She's married to the muffin man...","ref":"assets/scenes/shrek/refs/214_lord_farquaad.mp3","vo":0.0,"vd":1.86},{"id":"215_lord_farquaad","t":69.45,"d":0.288,"c":"Lord Farquaad","text":"*gasp*","ref":"assets/scenes/shrek/refs/215_lord_farquaad.mp3","vo":0.1,"vd":0.12},{"id":"216_lord_farquaad","t":72.147,"d":2.472,"c":"Lord Farquaad","text":"Then what are you waiting for? Bring it in.","ref":"assets/scenes/shrek/refs/216_lord_farquaad.mp3","vo":0.1,"vd":2.04},{"id":"217_lord_farquaad","t":89.682,"d":1.8,"c":"Lord Farquaad","text":"Magic mirror...","ref":"assets/scenes/shrek/refs/217_lord_farquaad.mp3","vo":0.22,"vd":1.4},{"id":"218_lord_farquaad","t":93.893,"d":0.912,"c":"Lord Farquaad","text":"*grunts*","ref":"assets/scenes/shrek/refs/218_lord_farquaad.mp3","vo":0.22,"vd":0.666},{"id":"219_lord_farquaad","t":97.411,"d":7.848,"c":"Lord Farquaad","text":"Evening...Mirror, mirror on the wall, is this not the most perfect kingdom of them all?","ref":"assets/scenes/shrek/refs/219_lord_farquaad.mp3","vo":0.52,"vd":6.96},{"id":"220_lord_farquaad","t":108.125,"d":1.488,"c":"Lord Farquaad","text":"Uh, Thelonius.","ref":"assets/scenes/shrek/refs/220_lord_farquaad.mp3","vo":0.14,"vd":0.98},{"id":"221_lord_farquaad","t":111.348,"d":0.96,"c":"Lord Farquaad","text":"You were saying?","ref":"assets/scenes/shrek/refs/221_lord_farquaad.mp3","vo":0.08,"vd":0.72},{"id":"222_lord_farquaad","t":119.368,"d":1.32,"c":"Lord Farquaad","text":"Go on...","ref":"assets/scenes/shrek/refs/222_lord_farquaad.mp3","vo":0.12,"vd":0.92},{"id":"223_lord_farquaad","t":185.431,"d":1.512,"c":"Lord Farquaad","text":"*mumbling*","ref":"assets/scenes/shrek/refs/223_lord_farquaad.mp3","vo":0.64,"vd":0.84},{"id":"224_lord_farquaad","t":188.084,"d":2.136,"c":"Lord Farquaad","text":"Three? One? NNGH Three?","ref":"assets/scenes/shrek/refs/224_lord_farquaad.mp3","vo":0.0,"vd":2.0},{"id":"225_lord_farquaad","t":192.711,"d":3.312,"c":"Lord Farquaad","text":"O-Okay, okay, uh...number three!","ref":"assets/scenes/shrek/refs/225_lord_farquaad.mp3","vo":0.0,"vd":2.88},{"id":"226_lord_farquaad","t":205.632,"d":8.736,"c":"Lord Farquaad","text":"Princess...Fiona. She's perfect. All I have to do is just find someone who can go...","ref":"assets/scenes/shrek/refs/226_lord_farquaad.mp3","vo":0.0,"vd":8.692},{"id":"227_lord_farquaad","t":215.609,"d":0.888,"c":"Lord Farquaad","text":"I'll do it!","ref":"assets/scenes/shrek/refs/227_lord_farquaad.mp3","vo":0.26,"vd":0.4},{"id":"228_lord_farquaad","t":217.569,"d":8.448,"c":"Lord Farquaad","text":"SILENCE! I will make this Princess Fiona my queen, and DuLoc will finally have... the perfect king!","ref":"assets/scenes/shrek/refs/228_lord_farquaad.mp3","vo":0.06,"vd":7.84},{"id":"229_lord_farquaad","t":226.069,"d":5.784,"c":"Lord Farquaad","text":"Captain, assemble your finest men. We're going to have a tournament!","ref":"assets/scenes/shrek/refs/229_lord_farquaad.mp3","vo":0.16,"vd":4.36},{"id":"301_guard","t":70.05,"d":1.992,"c":"Guard","text":"My lord! We found it.","ref":"assets/scenes/shrek/refs/301_guard.mp3","vo":0.02,"vd":1.64},{"id":"302_guard","t":75.019,"d":2.376,"c":"Guard","text":"*grunting*","ref":"assets/scenes/shrek/refs/302_guard.mp3","vo":0.3,"vd":2.033},{"id":"303_guard","t":86.32,"d":1.152,"c":"Guard","text":"Guards: *gasping in awe*","ref":"assets/scenes/shrek/refs/303_guard.mp3","vo":0.22,"vd":0.54},{"id":"304_guard","t":184.429,"d":3.96,"c":"Guard","text":"Guards: Two! Two! Three! Three! Two! Two! Three!","ref":"assets/scenes/shrek/refs/304_guard.mp3","vo":0.94,"vd":2.98},{"id":"305_guard","t":200.913,"d":2.592,"c":"Guard","text":"Guards: *cheering*","ref":"assets/scenes/shrek/refs/305_guard.mp3","vo":2.0,"vd":0.14},{"id":"401_mirror","t":105.336,"d":2.736,"c":"Mirror","text":"Well, technically you're not a king.","ref":"assets/scenes/shrek/refs/401_mirror.mp3","vo":0.16,"vd":2.26},{"id":"402_mirror","t":112.323,"d":2.616,"c":"Mirror","text":"What I mean is uh...you're not a king yet, ha!","ref":"assets/scenes/shrek/refs/402_mirror.mp3","vo":0.04,"vd":2.26},{"id":"403_mirror","t":114.88,"d":3.984,"c":"Mirror","text":"But-But you can become one. All you have to do is marry a princess.","ref":"assets/scenes/shrek/refs/403_mirror.mp3","vo":0.16,"vd":3.48},{"id":"404_mirror","t":120.962,"d":11.832,"c":"Mirror","text":"Ha...SO, just sit back and relax, my lord, because it's time for you to meet today's eligible bachelorettes. And hereee they are!","ref":"assets/scenes/shrek/refs/404_mirror.mp3","vo":0.0,"vd":11.72},{"id":"405_mirror","t":133.357,"d":13.8,"c":"Mirror","text":"Bachelorette number one is a mentally abused shut-in from a kingdom far, far away. She likes sushi and hot tubbing anytime. Her hobbies include cooking and cleaning for her two evil sisters. Please welcome Cinderella!","ref":"assets/scenes/shrek/refs/405_mirror.mp3","vo":0.3,"vd":13.16},{"id":"406_mirror","t":147.419,"d":14.112,"c":"Mirror","text":"Bachelorette number two is a cape-wearing girl from the land of fancy. Although she lives with seven other men, she's not easy. Just kiss her dead, frozen lips find out what a live wire she is. Come on. Give it up for Snooow White!","ref":"assets/scenes/shrek/refs/406_mirror.mp3","vo":0.06,"vd":13.26},{"id":"407_mirror","t":161.554,"d":16.608,"c":"Mirror","text":"And last, but certainly not least, bachelorette number three is a fiery redhead from a dragon-guarded castle surrounded by hot boiling lava! But don't let that cool you off. She's a loaded pistol who likes pina coladas and getting caught in the rain. Yours for the rescuing, Princess Fiona!","ref":"assets/scenes/shrek/refs/407_mirror.mp3","vo":0.14,"vd":16.16},{"id":"408_mirror","t":178.37,"d":6.024,"c":"Mirror","text":"So, will it be bachelorette number one, bachelorette number two or bachelorette number three?","ref":"assets/scenes/shrek/refs/408_mirror.mp3","vo":0.16,"vd":5.62},{"id":"409_mirror","t":196.124,"d":4.656,"c":"Mirror","text":"Lord Farquaad, you've chosen Princess Fiona.","ref":"assets/scenes/shrek/refs/409_mirror.mp3","vo":0.24,"vd":4.392},{"id":"410_mirror","t":212.532,"d":3.72,"c":"Mirror","text":"But I probably should mention the little thing that happens at night.","ref":"assets/scenes/shrek/refs/410_mirror.mp3","vo":0.2,"vd":3.487},{"id":"411_mirror","t":216.298,"d":1.392,"c":"Mirror","text":"Yes, but after sunset...","ref":"assets/scenes/shrek/refs/411_mirror.mp3","vo":0.02,"vd":1.326},{"id":"412_mirror","t":217.868,"d":0.6,"c":"Mirror","text":"*gasps*","ref":"assets/scenes/shrek/refs/412_mirror.mp3","vo":0.0,"vd":0.4},{"id":"501_thelonius","t":190.239,"d":2.4,"c":"Thelonius","text":"Three! Pick number three, my lord!","ref":"assets/scenes/shrek/refs/501_thelonius.mp3","vo":0.14,"vd":1.9},{"id":"502_thelonius","t":204.336,"d":1.296,"c":"Thelonius","text":"*laughing and clapping*","ref":"assets/scenes/shrek/refs/502_thelonius.mp3","vo":0.26,"vd":0.14}]}};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+const PACK_DB='dublab-private-packs-v1';
+const packInput=document.querySelector('#packInput');
+const scenePalette=['#dc6826','#7144d8','#2657a6','#8d3e63','#2e8b70'];
+function safeSvgText(s){return String(s||'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+Object.values(SCENES).forEach((s,i)=>{const a=scenePalette[i%scenePalette.length],b=scenePalette[(i+2)%scenePalette.length];s.icon=`data:image/svg+xml;charset=utf-8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient><filter id="n"><feTurbulence baseFrequency=".8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .10 0"/></filter></defs><rect width="1200" height="700" fill="#09090b"/><circle cx="980" cy="90" r="520" fill="url(#g)" opacity=".75"/><rect width="1200" height="700" filter="url(#n)" opacity=".45"/><text x="70" y="560" fill="#fff" font-family="Arial,sans-serif" font-size="72" font-weight="800">${safeSvgText(s.title)}</text><text x="72" y="620" fill="#ddd" font-family="Arial,sans-serif" font-size="27">ADR SCENE PACK</text></svg>`)}`});
+function tarFiles(buf){
+  const bytes=new Uint8Array(buf), dec=new TextDecoder(), files=new Map(); let off=0;
+  const text=(a,b)=>dec.decode(bytes.subarray(a,b)).replace(/\0.*$/,'');
+  while(off+512<=bytes.length){
+    const name=text(off,off+100); if(!name) break;
+    const prefix=text(off+345,off+500); let full=(prefix?prefix+'/':'')+name; full=full.replace(/^\.\/+/, '');
+    const size=parseInt(text(off+124,off+136).trim()||'0',8)||0, type=String.fromCharCode(bytes[off+156]||48), start=off+512;
+    if(type==='0'||type==='\0') files.set(full,new Uint8Array(buf,start,size));
+    off=start+Math.ceil(size/512)*512;
+  }
+  return files;
+}
+function mimeFor(path){const p=path.toLowerCase();if(p.endsWith('.mp4'))return 'video/mp4';if(p.endsWith('.mp3'))return 'audio/mpeg';if(p.endsWith('.png'))return 'image/png';if(p.endsWith('.webp'))return 'image/webp';return 'application/octet-stream'}
+function packDB(){return new Promise((resolve,reject)=>{const q=indexedDB.open(PACK_DB,1);q.onupgradeneeded=()=>q.result.createObjectStore('packs');q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)})}
+async function packGet(id){try{const db=await packDB();return await new Promise((resolve,reject)=>{const tx=db.transaction('packs','readonly'),q=tx.objectStore('packs').get(id);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error)})}catch{return null}}
+async function packPut(id,blob){try{const db=await packDB();await new Promise((resolve,reject)=>{const tx=db.transaction('packs','readwrite');tx.objectStore('packs').put(blob,id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){console.warn('Could not cache scene pack',e)}}
+function choosePack(s){return new Promise((resolve,reject)=>{packInput.value='';packInput.onchange=()=>{const f=packInput.files?.[0];packInput.onchange=null;if(f)resolve(f);else reject(new Error('No scene pack selected.'))};notice(`Choose the ${s.title} class scene-pack file.` ,7000);packInput.click()})}
+async function unpackScene(s,blob){
+  if(!('DecompressionStream' in window))throw new Error('Please use a current version of Chrome.');
+  const ab=await new Response(blob.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(), files=tarFiles(ab), urls=[];
+  const prefix=`assets/scenes/${s.id}/`;
+  const resolve=(p)=>{if(typeof p!=='string'||!p.startsWith(prefix))return p;const rel=p.slice(prefix.length),data=files.get(rel);if(!data)throw new Error(`This is not the ${s.title} pack (missing ${rel}).`);const u=URL.createObjectURL(new Blob([data],{type:mimeFor(rel)}));urls.push(u);return u};
+  s.video=resolve(s.video);s.original=resolve(s.original);for(const k of Object.keys(s.beds))s.beds[k]=resolve(s.beds[k]);for(const l of s.lines)l.ref=resolve(l.ref);
+  s._assetUrls=urls;s._packReady=true;notice(`${s.title} ready`);
+}
+async function ensureSceneAssets(s){
+  if(!s||s._packReady)return; if(s._packPromise)return s._packPromise;
+  s._packPromise=(async()=>{
+    notice(`Opening ${s.title}…`);
+    let blob=await packGet(s.id);
+    if(!blob){blob=await choosePack(s);await packPut(s.id,blob)}
+    await unpackScene(s,blob);
+  })().catch(e=>{s._packPromise=null;console.error(e);notice(e.message||'Could not load scene',6500);throw e});
+  return s._packPromise;
+}
+const screens=['library','dubs','setup','player','review'];
+const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function show(id){screens.forEach(s=>$('#'+s).classList.toggle('active',s===id));$$('[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.nav===id||(id==='setup'&&b.dataset.nav==='library')));if(id==='dubs')renderDubbedLibrary();window.scrollTo({top:0,behavior:'instant'})}
+function fmt(sec){sec=Math.max(0,Number(sec)||0);const m=Math.floor(sec/60),s=Math.floor(sec%60);return `${m}:${String(s).padStart(2,'0')}`}
+let noticeTimer;
+function notice(msg,ms=4200){const n=$('#notice');n.textContent=msg;n.classList.add('show');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>n.classList.remove('show'),ms)}
+
+const video=$('#video');
+video.muted=true;
+video.volume=0;
+video.controls=false;
+const legacyBed=$('#bed'), legacyTake=$('#takeAudio');
+legacyBed.style.display='none'; legacyTake.style.display='none';
+
+let scene=null, selectedRole='Everyone';
+let runMode='original', playbackTake=false;
+let audioCtx=null;
+const audioCache=new Map(), refCache=new Map();
+let bedSource=null, takeSource=null;
+let isPlaying=false, playStartCtx=0, playStartMedia=0, pausedMedia=0, raf=0, ending=false;
+
+let micStream=null, micSource=null, recorderNode=null, processor=null, silentGain=null, recorderWorkletReady=false, recorderCmdSeq=0;
+let recording=false, captureEnabled=false, recordChunks=[], recordLength=0, recordSampleRate=48000, recordStartCtx=0, takeMappingSet=false, recordingEngine="";
+let takeData=null, takeMediaZeroSec=0, takeBufferCache=null, currentSavedId=null, lastScoreData=null;
+let cueSections=[], countedSections=new Set(), cuePauseBusy=false;
+let seekDragging=false, exportBusy=false, reviewOrigin='setup';
+
+function sceneEntries(){return Object.values(SCENES)}
+function targetLines(){return selectedRole==='Everyone'?scene.lines:scene.lines.filter(l=>l.c===selectedRole)}
+function lineStart(l){return l.t+(l.vo||0)}
+function lineDur(l){return l.vd||l.d}
+function bedUrl(mode){return mode==='original'?scene.original:(scene.beds[selectedRole]||scene.beds.Everyone)}
+function roleCount(role){return role==='Everyone'?scene.lines.length:scene.lines.filter(l=>l.c===role).length}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function targetLineSet(){return new Set(targetLines())}
+function buildCueSections(){
+  if(!scene)return [];
+  const targets=targetLines().slice().sort((a,b)=>lineStart(a)-lineStart(b));
+  const targetSet=new Set(targets), sections=[];
+  for(const l of targets){
+    const start=lineStart(l), end=start+lineDur(l);let cur=sections[sections.length-1];
+    if(!cur){sections.push({id:l.id,start,end,lines:[l]});continue}
+    const otherBetween=scene.lines.some(o=>!targetSet.has(o)&&lineStart(o)>cur.end-.04&&lineStart(o)<start-.04);
+    if(start-cur.end>4.0||otherBetween) sections.push({id:l.id,start,end,lines:[l]});
+    else{cur.lines.push(l);cur.end=Math.max(cur.end,end)}
+  }
+  for(const sec of sections){const priorEnds=scene.lines.map(x=>lineStart(x)+lineDur(x)).filter(e=>e<=sec.start+.001);const priorEnd=priorEnds.length?Math.max(...priorEnds):0;const earliest=Math.max(0,sec.start-.82),safe=Math.max(earliest,priorEnd+.06);sec.trigger=safe<sec.start-.10?safe:null}
+  return sections;
+}
+function resetCueSections(){cueSections=buildCueSections();countedSections=new Set();cuePauseBusy=false;if(cueSections[0]&&cueSections[0].start<1.05)countedSections.add(cueSections[0].id)}
+function nextCueSection(t){return cueSections.find(sec=>sec.trigger!=null&&!countedSections.has(sec.id)&&t>=sec.trigger&&t<sec.start-.10)}
+
+// IndexedDB keeps raw takes local without bloating localStorage.
+const DB_NAME='DubLabDB', DB_VERSION=1, DB_STORE='dubs';
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(DB_STORE)){const st=db.createObjectStore(DB_STORE,{keyPath:'id'});st.createIndex('created','created')}};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function dbPut(v){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(v);tx.oncomplete=()=>resolve(v);tx.onerror=()=>reject(tx.error)})}
+async function dbGet(id){const db=await openDB();return new Promise((resolve,reject)=>{const r=db.transaction(DB_STORE).objectStore(DB_STORE).get(id);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)})}
+async function dbAll(){const db=await openDB();return new Promise((resolve,reject)=>{const r=db.transaction(DB_STORE).objectStore(DB_STORE).getAll();r.onsuccess=()=>resolve((r.result||[]).sort((a,b)=>b.created-a.created));r.onerror=()=>reject(r.error)})}
+async function dbDelete(id){const db=await openDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).delete(id);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}
+function floatToI16(float){const out=new Int16Array(float.length);for(let i=0;i<float.length;i++){const v=Math.max(-1,Math.min(1,float[i]));out[i]=v<0?v*32768:v*32767}return out}
+function i16ToFloat(i16){const src=i16 instanceof Int16Array?i16:new Int16Array(i16);const out=new Float32Array(src.length);for(let i=0;i<src.length;i++)out[i]=src[i]/(src[i]<0?32768:32767);return out}
+async function updateDubCount(){try{$('#dubCount').textContent=(await dbAll()).length}catch{$('#dubCount').textContent='?'}}
+function dateLabel(ts){try{return new Intl.DateTimeFormat(undefined,{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}).format(new Date(ts))}catch{return new Date(ts).toLocaleString()}}
+function storedRows(rows){return (rows||[]).map(r=>({lineId:r.l?.id||r.lineId,score:r.score,timing:r.timing,delivery:r.delivery,quality:r.quality,err:r.err}))}
+async function saveCurrentDub(){
+  if(!scene||!takeData?.samples?.length)return;
+  try{
+    const rec={id:currentSavedId||((crypto.randomUUID&&crypto.randomUUID())||('dub-'+Date.now()+'-'+Math.random().toString(36).slice(2))),sceneId:scene.id,role:selectedRole,created:Date.now(),sampleRate:takeData.sampleRate,takeMediaZeroSec,pcm:floatToI16(takeData.samples),score:lastScoreData?{overall:lastScoreData.overall,timing:lastScoreData.timing,delivery:lastScoreData.delivery,quality:lastScoreData.quality}:null,rows:storedRows(lastScoreData?.rows)};
+    currentSavedId=rec.id;await dbPut(rec);$('#saveNote').textContent='✓ Saved to Dubbed';await updateDubCount();
+  }catch(e){console.error('saveCurrentDub',e);$('#saveNote').textContent='Could not save this take locally.'}
+}
+async function renderDubbedLibrary(){
+  const grid=$('#dubGrid');if(!grid)return;
+  try{const all=await dbAll();$('#dubCount').textContent=all.length;if(!all.length){grid.innerHTML='<div class="empty-dubs"><strong>No dubs yet.</strong>Finish a take and it will appear here automatically.</div>';return}
+    grid.innerHTML=all.map(d=>{const s=SCENES[d.sceneId];if(!s)return '';const sc=d.score?.overall;return `<article class="dub-card"><div class="dub-thumb"><img src="${esc(s.icon)}" alt="">${sc!=null?`<div class="dub-score">${sc}</div>`:''}</div><div class="dub-copy"><div class="eyebrow">${esc(d.role)} · ${dateLabel(d.created)}</div><h3>${esc(s.title)}</h3><p>${d.score?`Timing ${d.score.timing} · Delivery ${d.score.delivery} · Recording ${d.score.quality}`:'Saved take'}</p><div class="dub-actions"><button class="btn primary" data-dub-play="${esc(d.id)}">▶ Play</button><button class="btn" data-dub-review="${esc(d.id)}">Review</button><button class="btn" data-dub-download="${esc(d.id)}">⇩ MP4</button><button class="btn danger" data-dub-delete="${esc(d.id)}">Delete</button></div></div></article>`}).join('');
+    $$('[data-dub-play]').forEach(b=>b.onclick=()=>openSavedDub(b.dataset.dubPlay,'play'));$$('[data-dub-review]').forEach(b=>b.onclick=()=>openSavedDub(b.dataset.dubReview,'review'));$$('[data-dub-download]').forEach(b=>b.onclick=()=>openSavedDub(b.dataset.dubDownload,'download'));$$('[data-dub-delete]').forEach(b=>b.onclick=async()=>{if(confirm('Delete this saved dub?')){await dbDelete(b.dataset.dubDelete);renderDubbedLibrary();updateDubCount()}})
+  }catch(e){console.error(e);grid.innerHTML='<div class="empty-dubs"><strong>Could not open Dubbed.</strong>Your browser blocked local storage for this session.</div>'}
+}
+async function openSavedDub(id,action='review'){
+  const d=await dbGet(id);if(!d||!SCENES[d.sceneId])return;stopScene(true);if(recording)discardRecording();scene=SCENES[d.sceneId];try{await ensureSceneAssets(scene)}catch{return}selectedRole=d.role;video.src=scene.video;video.load();takeData={samples:i16ToFloat(d.pcm),sampleRate:d.sampleRate};takeMediaZeroSec=d.takeMediaZeroSec||0;takeBufferCache=null;currentSavedId=d.id;lastScoreData=d.score?{...d.score,rows:(d.rows||[]).map(r=>({...r,l:scene.lines.find(l=>l.id===r.lineId)||{id:r.lineId,c:selectedRole,text:''}}))}:null;
+  $('#setupIcon').src=scene.icon;$('#posterTitle').textContent=scene.title;$('#posterMeta').textContent=scene.subtitle;$('#setupTitle').textContent=scene.title;renderRoles();
+  if(action==='play'){show('player');await startScene('dub',{withTake:true,from:scene.preRoll});return}
+  reviewOrigin='dubs';$('#reviewBack').textContent='← Dubbed library';populateSavedReview();show('review');if(action==='download')await exportCurrentDub();
+}
+function populateSavedReview(){
+  $('#reviewRole').textContent=`${selectedRole.toUpperCase()} · ${scene.title}`;$('#playTakeBtn').disabled=!takeData;$('#downloadBtn').disabled=!takeData;$('#saveNote').textContent='✓ Saved to Dubbed';
+  if(lastScoreData)setScore(lastScoreData.overall,lastScoreData.timing,lastScoreData.delivery,lastScoreData.quality,lastScoreData.rows||[],false);else{$('#overallScore').textContent='--';$('#rating').textContent='Saved take';$('#feedback').textContent='This take is saved and ready to replay or download.'}
+}
+
+function renderLibrary(){
+  updateDubCount();
+  $('#sceneGrid').innerHTML=sceneEntries().map(s=>`<button class="scene-card" data-scene="${esc(s.id)}"><img src="${esc(s.icon)}" alt=""><div class="scene-copy"><div class="meta"><span>${fmt(s.duration)}</span><span>·</span><span>${s.roles.length} role${s.roles.length===1?'':'s'}</span></div><h2>${esc(s.title)}</h2><p>${esc(s.subtitle)}</p></div></button>`).join('');
+  $$('[data-scene]').forEach(b=>b.onclick=()=>selectScene(b.dataset.scene));
+}
+
+async function getCtx(resume=true){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});
+  if(resume && audioCtx.state==='suspended') await audioCtx.resume();
+  return audioCtx;
+}
+
+async function loadAudio(url){
+  if(audioCache.has(url)) return audioCache.get(url);
+  const p=(async()=>{
+    const ctx=await getCtx(false);
+    const r=await fetch(url,{cache:'force-cache'});
+    if(!r.ok) throw new Error(`Audio load failed (${r.status})`);
+    const ab=await r.arrayBuffer();
+    return await ctx.decodeAudioData(ab.slice(0));
+  })();
+  audioCache.set(url,p);
+  try{return await p}catch(e){audioCache.delete(url);throw e}
+}
+
+function videoReady(){
+  if(video.readyState>=1) return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const ok=()=>{cleanup();resolve()}, bad=()=>{cleanup();reject(new Error('Video failed to load'))};
+    const cleanup=()=>{video.removeEventListener('loadedmetadata',ok);video.removeEventListener('error',bad)};
+    video.addEventListener('loadedmetadata',ok,{once:true});
+video.addEventListener('error',bad,{once:true});
+    setTimeout(()=>{cleanup(); video.readyState>=1?resolve():reject(new Error('Video load timeout'))},10000);
+  });
+}
+
+async function seekVideo(t){
+  await videoReady();
+  t=Math.max(0,Math.min(t,Math.max(0,(video.duration||999)-.05)));
+  if(Math.abs(video.currentTime-t)<.04) return;
+  await new Promise(resolve=>{
+    let done=false;
+    const finish=()=>{if(done)return;done=true;video.removeEventListener('seeked',finish);resolve()};
+    video.addEventListener('seeked',finish,{once:true});
+    try{video.currentTime=t}catch{finish()}
+    setTimeout(finish,1000);
+  });
+}
+
+async function selectScene(id){
+  stopScene(true);
+  if(recording) discardRecording();
+  scene=SCENES[id]; if(!scene)return;
+  try{await ensureSceneAssets(scene)}catch{return}
+  selectedRole=scene.roles[0]||'Everyone';
+  takeData=null;takeBufferCache=null;takeMediaZeroSec=0;currentSavedId=null;lastScoreData=null;
+  video.src=scene.video; video.load();
+  $('#setupIcon').src=scene.icon;$('#posterTitle').textContent=scene.title;$('#posterMeta').textContent=scene.subtitle;$('#setupTitle').textContent=scene.title;
+  renderRoles();show('setup');
+  // Warm the original and first role bed in the background.
+  loadAudio(scene.original).catch(()=>{}); loadAudio(bedUrl('dub')).catch(()=>{});
+}
+
+function renderRoles(){
+  const roles=[...scene.roles,'Everyone'];
+  $('#roleGrid').innerHTML=roles.map(r=>`<button class="role ${r===selectedRole?'selected':''}" data-role="${esc(r)}"><strong>${esc(r)}</strong><span>${roleCount(r)} cue${roleCount(r)===1?'':'s'}</span>${r==='Everyone'?'<em>FULL SCENE</em>':''}</button>`).join('');
+  $$('[data-role]').forEach(b=>b.onclick=()=>{selectedRole=b.dataset.role;takeData=null;takeBufferCache=null;currentSavedId=null;lastScoreData=null;renderRoles();loadAudio(bedUrl('dub')).catch(()=>{})});
+}
+
+function stopSources(){
+  for(const src of [bedSource,takeSource]){if(src){try{src.stop()}catch{};try{src.disconnect()}catch{}}}
+  bedSource=null;takeSource=null;
+}
+
+function currentMediaTime(){
+  if(isPlaying && audioCtx) return Math.max(0,playStartMedia+(audioCtx.currentTime-playStartCtx));
+  return Math.max(0,pausedMedia||video.currentTime||0);
+}
+function currentSceneTime(){return currentMediaTime()-(scene?.preRoll||0)}
+
+function stopScene(reset=false){
+  cancelAnimationFrame(raf); raf=0;
+  pausedMedia=currentMediaTime();
+  isPlaying=false; stopSources();
+  try{video.pause()}catch{}
+  $('#countdown').classList.add('hidden');$('#cue').classList.add('hidden');$('#subtitle').classList.add('hidden');$('#resume').classList.add('hidden');
+  $('#toggleBtn').textContent='▶';
+  if(reset && scene){pausedMedia=scene.preRoll;try{video.currentTime=scene.preRoll}catch{}}
+}
+
+function makeSource(buffer,offset=0,gainValue=1){
+  const src=audioCtx.createBufferSource();src.buffer=buffer;
+  const g=audioCtx.createGain();g.gain.value=gainValue;src.connect(g).connect(audioCtx.destination);
+  offset=Math.max(0,Math.min(offset,Math.max(0,buffer.duration-.01)));
+  src.start(0,offset);return src;
+}
+
+function makeTakeBuffer(){
+  if(!takeData)return null;if(takeBufferCache)return takeBufferCache;
+  const b=audioCtx.createBuffer(1,takeData.samples.length,takeData.sampleRate);b.copyToChannel(takeData.samples,0);takeBufferCache=b;return b;
+}
+
+async function prepareSceneAudio(mode,withTake){
+  await getCtx(true);
+  const bed=await loadAudio(bedUrl(mode));
+  if(withTake && !takeData) throw new Error('No recorded take yet');
+  return bed;
+}
+
+async function startScene(mode,{withTake=false,from=null}={}){
+  if(!scene)return false;
+  stopScene(false); ending=false;runMode=mode;playbackTake=withTake;
+  const defaultFrom=mode==='original'?scene.preRoll:0;
+  const requested=from==null?defaultFrom:from;
+  $('#playerTitle').textContent=withTake?`My ${selectedRole} Take`:scene.title;
+  $('#playerSub').textContent=mode==='original'?'Original scene audio is playing.':withTake?'Your recorded dialogue is playing over the role-muted scene.':`${selectedRole} is muted. Follow the highlighted cues.`;
+  $('#modePill').textContent=mode==='original'?'ORIGINAL':withTake?'MY DUB':`DUBBING ${selectedRole.toUpperCase()}`;
+  $('#modePill').classList.toggle('live',mode==='dub'&&!withTake);
+  $('#resume').classList.add('hidden');
+  try{
+    $('#playerSub').textContent=withTake?'Loading your take…':'Loading scene audio…';
+    const bed=await prepareSceneAudio(mode,withTake);
+    await seekVideo(requested);
+    await getCtx(true);
+    // Picture is always muted, so browser autoplay policy cannot block the soundtrack.
+    video.muted=true;video.volume=0;
+    const vp=video.play();
+    if(vp && typeof vp.then==='function') await vp;
+    const actual=Math.max(0,video.currentTime);
+    playStartMedia=actual;playStartCtx=audioCtx.currentTime;pausedMedia=actual;
+    bedSource=makeSource(bed,actual,1);
+    if(withTake){
+      const tb=makeTakeBuffer();
+      const takeOffset=takeMediaZeroSec+actual;
+      if(tb && takeOffset<tb.duration-.01) takeSource=makeSource(tb,takeOffset,1);
+    }
+    if(recording&&!takeMappingSet){takeMediaZeroSec=(recordLength/recordSampleRate)-actual;takeMappingSet=true;}
+    isPlaying=true;
+    $('#playerSub').textContent=mode==='original'?'Original scene audio is playing.':withTake?'Your recorded dialogue is playing in the scene.':`${selectedRole} is muted. Follow the highlighted cues.`;
+    $('#toggleBtn').textContent='❚❚';$('#seekBar').disabled=recording;$('#seekHint').textContent=recording?'Scrubbing disabled while recording':'Drag to scrub';
+    cancelAnimationFrame(raf);raf=requestAnimationFrame(updateStage);
+    window.__dublabDebug={playing:true,mode,withTake,audioState:audioCtx.state,scene:scene.id,role:selectedRole};
+    return true;
+  }catch(e){
+    console.error('startScene',e);stopScene(false);
+    $('#resume').classList.remove('hidden');$('#playerSub').textContent='Playback did not start.';
+    window.__dublabDebug={playing:false,error:String(e),scene:scene?.id};
+    notice(`Playback failed: ${e.message||e}`,6500);return false;
+  }
+}
+
+function showCue(l,speak){$('#cue').classList.remove('hidden');$('#subtitle').classList.add('hidden');$('#cueStatus').textContent=speak?'SPEAK':'GET READY';$('#cueStatus').classList.toggle('speak',speak);$('#cueSpeaker').textContent=l.c;$('#cueLine').textContent=l.text}
+function showSubtitle(l){$('#subtitle').classList.remove('hidden');$('#cue').classList.add('hidden');$('#subName').textContent=l.c;$('#subLine').textContent=l.text}
+
+function updateStage(){
+  if(!scene||!isPlaying)return;
+  const media=currentMediaTime(), t=media-scene.preRoll;
+  const display=Math.max(0,t), total=scene.duration;
+  if(!seekDragging)$('#seekBar').value=Math.round(Math.min(1,display/Math.max(.1,total))*1000);$('#timePill').textContent=`${fmt(display)} / ${fmt(total)}`;
+  // AudioContext is master clock. Correct picture only when it visibly drifts.
+  if(!video.paused && Math.abs(video.currentTime-media)>.11){try{video.currentTime=media}catch{}}
+  if(recording && $('#sectionCountdownToggle').checked && !cuePauseBusy && t>=0){const sec=nextCueSection(t);if(sec){pauseForSection(sec);return}}
+  $('#countdown').classList.add('hidden');$('#cue').classList.add('hidden');$('#subtitle').classList.add('hidden');
+  if(runMode==='dub'&&!playbackTake && media<scene.preRoll){
+    const remain=Math.max(0,scene.preRoll-media);const n=Math.max(1,Math.min(3,Math.ceil(remain/(scene.preRoll/3))));$('#countNum').textContent=n;$('#countNext').innerHTML='<small>Get ready</small>Scene starts';$('#countdown').classList.remove('hidden');
+  }else if(t>=0){
+    if(runMode==='original'){
+      const active=scene.lines.find(l=>t>=lineStart(l)&&t<=lineStart(l)+lineDur(l));if(active)showSubtitle(active);
+    }else if(playbackTake){
+      const active=scene.lines.find(l=>t>=lineStart(l)&&t<=lineStart(l)+lineDur(l));if(active)showSubtitle(active);
+    }else{
+      const targets=targetLines();
+      const cue=targets.find(l=>t>=lineStart(l)-1.35&&t<=lineStart(l)+lineDur(l)+.1);
+      if(cue)showCue(cue,t>=lineStart(cue)-.12);
+      else {const other=scene.lines.find(l=>!targets.includes(l)&&t>=lineStart(l)&&t<=lineStart(l)+lineDur(l));if(other)showSubtitle(other)}
+    }
+  }
+  if(media>=scene.preRoll+scene.duration-.04){handleSceneEnd();return}
+  window.__dublabDebug={playing:true,mode:runMode,withTake:playbackTake,audioState:audioCtx?.state,currentMedia:media,videoTime:video.currentTime,scene:scene.id,role:selectedRole};
+  raf=requestAnimationFrame(updateStage);
+}
+
+
+async function pauseForSection(sec){
+  if(cuePauseBusy||!recording)return;cuePauseBusy=true;countedSections.add(sec.id);await setCaptureEnabled(false);
+  const hold=currentMediaTime();cancelAnimationFrame(raf);raf=0;pausedMedia=hold;isPlaying=false;stopSources();try{video.pause()}catch{};$('#toggleBtn').textContent='▶';
+  const first=sec.lines[0];$('#cue').classList.add('hidden');$('#subtitle').classList.add('hidden');$('#countdown').classList.remove('hidden');$('#countNext').innerHTML=`<small>${esc(first.c)}</small>${esc(first.text)}`;
+  await sleep(300);
+  for(const n of [3,2,1]){if(!recording)break;$('#countNum').textContent=n;await sleep(560)}
+  $('#countdown').classList.add('hidden');if(!recording){cuePauseBusy=false;return}
+  const ok=await startScene('dub',{withTake:false,from:hold});if(ok)await setCaptureEnabled(true);else{await setCaptureEnabled(false);notice('Could not resume after the countdown.',5500)}cuePauseBusy=false;
+}
+
+async function handleSceneEnd(){
+  if(ending)return;ending=true;
+  stopScene(false);pausedMedia=scene.preRoll+scene.duration;
+  if(recording) await finishRecording();
+}
+
+async function ensureMic(){
+  if(!navigator.mediaDevices?.getUserMedia) throw new Error('Microphone access is unavailable. Run DubLab from the included launcher in Chrome or Safari.');
+  if(micStream) return micStream;
+  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1},video:false});return micStream;
+}
+
+async function ensureRecorderWorklet(){
+  if(recorderWorkletReady)return true;
+  if(!audioCtx?.audioWorklet||!window.AudioWorkletNode)return false;
+  const code=`
+class DubLabPCMRecorder extends AudioWorkletProcessor {
+  constructor(){
+    super();this.enabled=false;this.size=2048;this.buf=new Float32Array(this.size);this.pos=0;
+    this.port.onmessage=e=>{const m=e.data||{};if(m.type==='setEnabled'){if(!m.value)this.flush();this.enabled=!!m.value;this.port.postMessage({type:'ack',id:m.id});}else if(m.type==='flush'){this.flush();this.port.postMessage({type:'ack',id:m.id});}};
+  }
+  flush(){if(!this.pos)return;const out=this.buf.slice(0,this.pos);this.pos=0;this.port.postMessage({type:'chunk',buffer:out.buffer},[out.buffer]);}
+  process(inputs){const input=inputs[0]&&inputs[0][0];if(this.enabled&&input){let i=0;while(i<input.length){const n=Math.min(input.length-i,this.size-this.pos);this.buf.set(input.subarray(i,i+n),this.pos);this.pos+=n;i+=n;if(this.pos===this.size){const out=this.buf;this.buf=new Float32Array(this.size);this.pos=0;this.port.postMessage({type:'chunk',buffer:out.buffer},[out.buffer]);}}}return true;}
+}
+registerProcessor('dublab-pcm-recorder',DubLabPCMRecorder);`;
+  const url=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+  try{await audioCtx.audioWorklet.addModule(url);recorderWorkletReady=true;return true}finally{URL.revokeObjectURL(url)}
+}
+
+function recorderCommand(type,value){
+  if(!recorderNode)return Promise.resolve();const id=++recorderCmdSeq;return new Promise(resolve=>{const timer=setTimeout(resolve,350);const handler=e=>{if(e.data?.type==='ack'&&e.data.id===id){clearTimeout(timer);recorderNode.port.removeEventListener('message',handler);resolve()}};recorderNode.port.addEventListener('message',handler);recorderNode.port.start();recorderNode.port.postMessage({type,id,value})})
+}
+async function setCaptureEnabled(value){captureEnabled=!!value;if(recorderNode)await recorderCommand('setEnabled',captureEnabled)}
+async function flushRecorder(){if(recorderNode)await recorderCommand('flush')}
+
+async function startPCMRecording(){
+  await getCtx(true);await ensureMic();
+  recordChunks=[];recordLength=0;recordSampleRate=audioCtx.sampleRate;recordStartCtx=audioCtx.currentTime;takeMediaZeroSec=0;takeMappingSet=false;takeData=null;takeBufferCache=null;currentSavedId=null;lastScoreData=null;captureEnabled=false;recordingEngine='';
+  micSource=audioCtx.createMediaStreamSource(micStream);silentGain=audioCtx.createGain();silentGain.gain.value=0;silentGain.connect(audioCtx.destination);recording=true;
+  try{
+    if(await ensureRecorderWorklet()){
+      recorderNode=new AudioWorkletNode(audioCtx,'dublab-pcm-recorder',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[1]});
+      recorderNode.port.onmessage=e=>{if(e.data?.type==='chunk'){const copy=new Float32Array(e.data.buffer);if(copy.length){recordChunks.push(copy);recordLength+=copy.length}}};
+      micSource.connect(recorderNode);recorderNode.connect(silentGain);recordingEngine='AudioWorklet';await setCaptureEnabled(false);return;
+    }
+  }catch(e){console.warn('AudioWorklet recorder unavailable, using fallback',e);try{recorderNode?.disconnect()}catch{};recorderNode=null}
+  processor=audioCtx.createScriptProcessor(4096,1,1);
+  processor.onaudioprocess=e=>{if(!recording||!captureEnabled)return;const input=e.inputBuffer.getChannelData(0);const copy=new Float32Array(input.length);copy.set(input);recordChunks.push(copy);recordLength+=copy.length};
+  micSource.connect(processor);processor.connect(silentGain);recordingEngine='ScriptProcessor fallback';
+}
+
+function disconnectMic(stopTracks=true){
+  try{micSource?.disconnect()}catch{};try{recorderNode?.disconnect()}catch{};try{processor?.disconnect()}catch{};try{silentGain?.disconnect()}catch{};
+  if(processor)processor.onaudioprocess=null;micSource=null;recorderNode=null;processor=null;silentGain=null;
+  if(stopTracks&&micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}
+}
+function collectTake(){
+  const all=new Float32Array(recordLength);let p=0;for(const c of recordChunks){all.set(c,p);p+=c.length}recordChunks=[];recordLength=0;return {samples:all,sampleRate:recordSampleRate,engine:recordingEngine};
+}
+function discardRecording(){recording=false;captureEnabled=false;disconnectMic(true);recordChunks=[];recordLength=0;takeMappingSet=false;takeData=null;takeBufferCache=null;currentSavedId=null;lastScoreData=null}
+
+async function beginDub(){
+  if(!scene)return;stopScene(false);show('player');resetReview();resetCueSections();
+  $('#playerTitle').textContent=`${selectedRole} · ${scene.title}`;$('#playerSub').textContent='Loading role-muted scene…';
+  try{
+    await prepareSceneAudio('dub',false);await videoReady();
+    $('#playerSub').textContent='Waiting for microphone permission…';await startPCMRecording();
+    const ok=await startScene('dub',{withTake:false,from:0});
+    if(ok)await setCaptureEnabled(true);else{discardRecording();notice('The scene did not start, so the take was not recorded.',5500)}
+  }catch(e){discardRecording();console.error(e);notice(e.message||'Could not start recording',6500);show('setup')}
+}
+
+async function finishRecording(){
+  if(!recording)return;await setCaptureEnabled(false);await flushRecorder();recording=false;disconnectMic(true);takeData=collectTake();takeBufferCache=null;
+  reviewOrigin='setup';$('#reviewBack').textContent='← Role select';show('review');$('#reviewRole').textContent=`${selectedRole.toUpperCase()} · ${scene.title}`;$('#playTakeBtn').disabled=!takeData?.samples?.length;$('#downloadBtn').disabled=!takeData?.samples?.length;
+  await analyseTake();
+}
+
+function resetReview(){
+  $('#overallScore').textContent='--';$('#rating').textContent='Waiting for take';$('#timingScore').textContent='--';$('#deliveryScore').textContent='--';$('#qualityScore').textContent='--';
+  for(const id of ['timingBar','deliveryBar','qualityBar'])$('#'+id).style.width='0%';
+  $('#feedback').textContent='Finish the scene to score your take.';$('#lineResults').innerHTML='<div style="color:#8f8a95;padding:8px 0">No take scored yet.</div>';$('#playTakeBtn').disabled=true;$('#downloadBtn').disabled=true;$('#saveNote').textContent='';
+}
+
+function mono(buffer){
+  if(buffer.numberOfChannels===1)return buffer.getChannelData(0);const out=new Float32Array(buffer.length);for(let c=0;c<buffer.numberOfChannels;c++){const d=buffer.getChannelData(c);for(let i=0;i<d.length;i++)out[i]+=d[i]/buffer.numberOfChannels}return out
+}
+function rms(d,a,b){a=Math.max(0,Math.floor(a));b=Math.min(d.length,Math.floor(b));if(b<=a)return 0;let s=0;for(let i=a;i<b;i++){const v=d[i];s+=v*v}return Math.sqrt(s/(b-a))}
+function clamp(v,a=0,b=100){return Math.max(a,Math.min(b,v))}
+function env(d,sr,start,dur,bins=20){const a=[],base=Math.floor(start*sr),total=Math.max(1,Math.floor(dur*sr));for(let j=0;j<bins;j++)a.push(rms(d,base+total*j/bins,base+total*(j+1)/bins));const mx=Math.max(...a,1e-7);return a.map(v=>v/mx)}
+async function refEnv(l){
+  const key=scene.id+':'+l.id;if(refCache.has(key))return refCache.get(key);
+  const b=await loadAudio(l.ref);const e=env(mono(b),b.sampleRate,l.vo||0,Math.min(lineDur(l),Math.max(.08,b.duration-(l.vo||0))),20);refCache.set(key,e);return e;
+}
+
+async function analyseTake(){
+  resetReview();$('#playTakeBtn').disabled=!takeData;$('#rating').textContent='Analysing…';$('#feedback').textContent='Comparing your timing and vocal shape to the original performance…';$('#lineResults').innerHTML='<div style="color:#8f8a95;padding:8px 0">Analysing line timing…</div>';
+  try{
+    if(!takeData?.samples?.length)throw new Error('No microphone samples were captured');
+    const data=takeData.samples,sr=takeData.sampleRate;
+    const noiseEnd=Math.min(data.length,Math.floor(sr*Math.max(.5,Math.min(1.4,scene.preRoll*.55))));
+    const noise=rms(data,0,noiseEnd);const threshold=Math.max(.0055,noise*2.6);
+    const rows=[];
+    for(const l of targetLines()){
+      const expected=takeMediaZeroSec+scene.preRoll+lineStart(l);
+      const targetDur=lineDur(l);const ws=Math.max(0,expected-.7),we=Math.min(data.length/sr,expected+targetDur+.85),step=.025;
+      const active=[];
+      for(let t=ws;t<we;t+=step){const v=rms(data,t*sr,Math.min((t+step)*sr,data.length));if(v>threshold)active.push({t,v})}
+      let onset=null,offset=null,timing=0,delivery=0,quality=0,err=null;
+      if(active.length){
+        onset=active[0].t;offset=active[active.length-1].t+step;err=onset-expected;
+        const spokenDur=Math.max(.1,offset-onset),durScore=clamp(100-Math.abs(spokenDur-targetDur)/Math.max(targetDur,.7)*72);
+        timing=Math.round(clamp(100-Math.abs(err)*120)*.7+durScore*.3);
+        const ue=env(data,sr,onset,Math.min(targetDur,Math.max(.35,data.length/sr-onset)),20),re=await refEnv(l);let mae=0,n=Math.min(ue.length,re.length);for(let i=0;i<n;i++)mae+=Math.abs(ue[i]-re[i]);mae/=Math.max(1,n);delivery=Math.round(clamp(100-mae*78));
+        const lineR=rms(data,onset*sr,Math.min(offset*sr,data.length)),snr=20*Math.log10((lineR+1e-8)/(noise+1e-8));let clips=0,total=0;for(let i=Math.floor(onset*sr);i<Math.min(data.length,Math.floor(offset*sr));i+=8){total++;if(Math.abs(data[i])>.985)clips++}quality=Math.round(clamp(42+snr*3.3-(total?clips/total:0)*950));
+      }
+      const score=Math.round(timing*.52+delivery*.28+quality*.20);rows.push({l,timing,delivery,quality,score,err});
+    }
+    const avg=k=>Math.round(rows.reduce((s,r)=>s+r[k],0)/Math.max(1,rows.length));
+    const timing=avg('timing'),delivery=avg('delivery'),quality=avg('quality'),overall=Math.round(timing*.5+delivery*.3+quality*.2);
+    setScore(overall,timing,delivery,quality,rows);
+  }catch(e){console.error('analyseTake',e);lastScoreData=null;$('#playTakeBtn').disabled=!takeData;$('#downloadBtn').disabled=!takeData;$('#overallScore').textContent='--';$('#rating').textContent='Take saved';$('#feedback').textContent=`Playback is available, but scoring failed: ${e.message||e}`;$('#lineResults').innerHTML='<div style="color:#8f8a95;padding:8px 0">No line scores available for this take.</div>';await saveCurrentDub();}
+}
+
+function setScore(overall,timing,delivery,quality,rows,save=true){
+  lastScoreData={overall,timing,delivery,quality,rows};$('#playTakeBtn').disabled=!takeData;$('#downloadBtn').disabled=!takeData;
+  $('#overallScore').textContent=overall;$('#timingScore').textContent=timing;$('#deliveryScore').textContent=delivery;$('#qualityScore').textContent=quality;$('#timingBar').style.width=timing+'%';$('#deliveryBar').style.width=delivery+'%';$('#qualityBar').style.width=quality+'%';
+  $('#rating').textContent=overall>=92?'Studio Ready':overall>=82?'Great Take':overall>=70?'Almost There':overall>=55?'Another Take':'Back in the Booth';
+  const misses=rows.filter(r=>r.err===null).length,te=rows.filter(r=>r.err!==null).sort((a,b)=>Math.abs(b.err)-Math.abs(a.err));
+  $('#feedback').textContent=misses?`${misses} cue${misses>1?'s':''} did not register clearly. Headphones will keep the soundtrack out of the microphone.`:te[0]&&Math.abs(te[0].err)>.18?`Biggest sync drift: ${Math.round(Math.abs(te[0].err)*1000)} ms ${te[0].err<0?'early':'late'} on “${te[0].l.text}”`:delivery<70?'Your timing is working. Try matching the original pauses and energy more closely.':'Strong sync across the scene. Try another take and beat it.';
+  $('#lineResults').innerHTML=rows.map(r=>`<div class="line-result"><div class="line-score">${r.score}</div><div><strong>${esc(r.l.c)}</strong><span>${esc(r.l.text)}</span></div><span class="timing">${r.err===null?'No cue detected':Math.abs(r.err)<.05?'On cue':Math.round(Math.abs(r.err)*1000)+' ms '+(r.err<0?'early':'late')}</span></div>`).join('');if(save)saveCurrentDub();
+}
+
+
+function safeName(s){return String(s||'dub').normalize('NFKD').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80)||'dub'}
+function bestRecorderMime(){const opts=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1.42E01E,opus','video/mp4;codecs=avc1','video/mp4'];return opts.find(x=>window.MediaRecorder?.isTypeSupported?.(x))||''}
+async function waitVideoMeta(v){if(v.readyState>=1)return;await new Promise((res,rej)=>{const ok=()=>{clean();res()},bad=()=>{clean();rej(new Error('Export video failed to load'))},clean=()=>{v.removeEventListener('loadedmetadata',ok);v.removeEventListener('error',bad)};v.addEventListener('loadedmetadata',ok,{once:true});v.addEventListener('error',bad,{once:true});setTimeout(()=>v.readyState>=1?ok():bad(),10000)})}
+async function exportCurrentDub(){
+  if(exportBusy||!scene||!takeData)return;if(!window.MediaRecorder){notice('This browser cannot export MP4. Use the current version of Chrome.',6500);return}
+  const mime=bestRecorderMime();if(!mime){notice('MP4 export is not available in this browser. Open DubLab in current Chrome.',7500);return}
+  exportBusy=true;stopScene(false);$('#exportOverlay').classList.remove('hidden');$('#exportFill').style.width='0%';$('#exportTime').textContent='Preparing MP4…';
+  let ev=null,canvas=null,drawRaf=0,progressRaf=0,recorder=null,bed=null,take=null,videoStream=null;
+  try{
+    await getCtx(true);const bedBuf=await loadAudio(scene.beds[selectedRole]||scene.beds.Everyone);const tb=makeTakeBuffer();if(!tb)throw new Error('No take loaded');
+    ev=document.createElement('video');ev.className='hidden-export-video';ev.crossOrigin='anonymous';ev.src=scene.video;ev.muted=true;ev.playsInline=true;ev.preload='auto';document.body.appendChild(ev);await waitVideoMeta(ev);ev.currentTime=scene.preRoll;await new Promise(r=>{if(Math.abs(ev.currentTime-scene.preRoll)<.04)return r();ev.addEventListener('seeked',r,{once:true});setTimeout(r,1000)});
+    const directCapture=ev.captureStream||ev.mozCaptureStream;let videoTrack=null;
+    if(directCapture){videoStream=directCapture.call(ev);videoTrack=videoStream.getVideoTracks()[0]||null}
+    if(!videoTrack){canvas=document.createElement('canvas');const scale=Math.min(1,1280/(ev.videoWidth||1280));canvas.width=Math.max(2,Math.round((ev.videoWidth||1280)*scale));canvas.height=Math.max(2,Math.round((ev.videoHeight||720)*scale));const cx=canvas.getContext('2d',{alpha:false});videoStream=canvas.captureStream(30);videoTrack=videoStream.getVideoTracks()[0];const draw=()=>{if(!ev||ev.ended)return;try{cx.drawImage(ev,0,0,canvas.width,canvas.height)}catch{}drawRaf=requestAnimationFrame(draw)};drawRaf=requestAnimationFrame(draw)}
+    if(!videoTrack)throw new Error('Could not capture the scene video');
+    const audioDest=audioCtx.createMediaStreamDestination();bed=audioCtx.createBufferSource();bed.buffer=bedBuf;bed.connect(audioDest);take=audioCtx.createBufferSource();take.buffer=tb;take.connect(audioDest);
+    const stream=new MediaStream([videoTrack,...audioDest.stream.getAudioTracks()]);const chunks=[];recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6000000,audioBitsPerSecond:192000});recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
+    const done=new Promise((resolve,reject)=>{recorder.onstop=()=>resolve();recorder.onerror=e=>reject(e.error||new Error('MediaRecorder failed'))});recorder.start(500);
+    await ev.play();const bedOffset=Math.min(scene.preRoll,Math.max(0,bedBuf.duration-.01)),takeOffset=Math.max(0,takeMediaZeroSec+scene.preRoll);bed.start(0,bedOffset);if(takeOffset<tb.duration-.01)take.start(0,takeOffset);
+    const duration=scene.duration;let finished=false;const finish=()=>{if(finished)return;finished=true;cancelAnimationFrame(drawRaf);cancelAnimationFrame(progressRaf);try{ev.pause()}catch{};try{bed.stop()}catch{};try{take.stop()}catch{};if(recorder.state!=='inactive')recorder.stop()};ev.addEventListener('ended',finish,{once:true});
+    const progress=()=>{if(finished)return;const elapsed=Math.min(duration,Math.max(0,ev.currentTime-scene.preRoll));$('#exportFill').style.width=(elapsed/duration*100)+'%';$('#exportTime').textContent=`Rendering MP4 · ${fmt(elapsed)} / ${fmt(duration)}`;if(elapsed>=duration-.04){finish();return}progressRaf=requestAnimationFrame(progress)};progressRaf=requestAnimationFrame(progress);setTimeout(finish,(duration+3)*1000);await done;
+    const blob=new Blob(chunks,{type:'video/mp4'});if(!blob.size)throw new Error('The exported MP4 was empty');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`${safeName(scene.title)}-${safeName(selectedRole)}-Dub.mp4`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);notice('Dub downloaded as MP4.',5000)
+  }catch(e){console.error('export',e);notice(`MP4 export failed: ${e.message||e}`,7500)}finally{cancelAnimationFrame(drawRaf);cancelAnimationFrame(progressRaf);try{bed?.stop()}catch{};try{take?.stop()}catch{};try{ev?.pause()}catch{};videoStream?.getTracks?.().forEach(t=>{try{t.stop()}catch{}});ev?.remove();$('#exportOverlay').classList.add('hidden');exportBusy=false}
+}
+
+renderLibrary();resetReview();updateDubCount();
+$$('[data-nav]').forEach(b=>b.onclick=()=>{if(recording){notice('Finish or discard the current take first.');return}stopScene(false);show(b.dataset.nav)});
+$$('[data-go]').forEach(b=>b.onclick=()=>{stopScene(false);if(recording)discardRecording();show(b.dataset.go)});
+$('#reviewBack').onclick=()=>{stopScene(false);show(reviewOrigin==='dubs'?'dubs':'setup')};
+$('#watchOriginalBtn').onclick=async()=>{show('player');await startScene('original',{withTake:false,from:scene.preRoll})};
+$('#startDubBtn').onclick=beginDub;$('#recordAgainBtn').onclick=beginDub;
+$('#originalAgainBtn').onclick=async()=>{if(recording){notice('Finish or leave the current take first.');return}await startScene('original',{from:scene.preRoll})};
+$('#playerBack').onclick=()=>{if(recording){if(confirm('Discard this recording and leave the scene?')){stopScene(false);discardRecording();show('setup')}}else{stopScene(false);show('setup')}};
+$('#toggleBtn').onclick=async()=>{
+  if(recording){notice('A dub take runs continuously. Use Back to discard it.');return}
+  if(isPlaying){pausedMedia=currentMediaTime();stopScene(false)}else{show('player');await startScene(runMode,{withTake:playbackTake,from:pausedMedia||scene.preRoll})}
+};
+$('#restartBtn').onclick=async()=>{if(recording){notice('A dub take runs continuously. Use Back to discard it.');return}await startScene(runMode,{withTake:playbackTake,from:scene.preRoll})};
+$('#playTakeBtn').onclick=async()=>{if(!takeData)return;show('player');await startScene('dub',{withTake:true,from:scene.preRoll})};
+$('#downloadBtn').onclick=exportCurrentDub;
+$('#retryBtn').onclick=beginDub;
+$('#resumeBtn').onclick=async()=>{await startScene(runMode,{withTake:playbackTake,from:pausedMedia||scene.preRoll})};
+const seekBar=$('#seekBar');
+function seekSceneSeconds(){return (Number(seekBar.value)||0)/1000*(scene?.duration||0)}
+seekBar.addEventListener('pointerdown',()=>{if(!recording)seekDragging=true});
+seekBar.addEventListener('input',()=>{if(!scene||recording)return;seekDragging=true;const t=seekSceneSeconds();$('#timePill').textContent=`${fmt(t)} / ${fmt(scene.duration)}`;try{video.currentTime=scene.preRoll+t}catch{}});
+async function commitSeek(){if(!scene||recording){seekDragging=false;return}const t=seekSceneSeconds(),from=scene.preRoll+t,was=isPlaying;stopScene(false);pausedMedia=from;await seekVideo(from);seekDragging=false;if(was)await startScene(runMode,{withTake:playbackTake,from})}
+seekBar.addEventListener('change',commitSeek);seekBar.addEventListener('pointerup',()=>setTimeout(()=>{if(seekDragging)commitSeek()},0));
+
+video.addEventListener('error',()=>notice('Video file failed to load for this scene.',6500));
+window.addEventListener('beforeunload',()=>{stopScene(false);if(recording)discardRecording();else disconnectMic(true)});
+
 </script></body></html>
